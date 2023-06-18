@@ -1,0 +1,109 @@
+{
+  "default": "welcome",
+  "root": "app",
+
+  "definition": {
+    "parameters": {
+      "0": "view"
+    }
+  },
+
+  "routes": [
+    {
+      "title": "Welcome",
+      "view": "welcome"
+    },
+    {
+      "title": "Mobile",
+      "view": "mobile"
+    },
+    {
+      "title": "Files",
+      "view": "files"
+    },
+    {
+      "title": "Resize",
+      "view": "resize"
+    },
+    {
+      "title": "Move",
+      "view": "move"
+    },
+    {
+      "title": "Media",
+      "view": "media"
+    },
+    {
+      "title": "Dialog",
+      "view": "dialog"
+    },
+    {
+      "title": "Dom",
+      "view": "dom"
+    },
+    {
+      "title": "Input",
+      "view": "input"
+    },
+    {
+      "title": "Before and after step",
+      "view": "before-after-step"
+    },
+    {
+      "title": "Events",
+      "view": "events"
+    },
+    {
+      "title": "Rest Api",
+      "view": "rest"
+    },
+    {
+      "title": "Data Operations",
+      "view": "data"
+    },
+    {
+      "title": "CSS Grid",
+      "view": "css-grid"
+    },
+    {
+      "title": "perspective",
+      "view": "perspective"
+    },
+    {
+      "title": "observer",
+      "view": "observer"
+    },
+    {
+      "title": "fixed-layout",
+      "view": "fixed-layout"
+    },
+    {
+      "title": "fixed-position",
+      "view": "fixed-position"
+    },
+    {
+      "title": "drag and drop",
+      "view": "drag-drop"
+    },
+    {
+      "title": "styles",
+      "view": "styles"
+    },
+    {
+      "title": "Translations",
+      "view": "translations"
+    },
+    {
+      "title": "Schema",
+      "view": "schema"
+    },
+    {
+      "title": "Html",
+      "view": "html"
+    },
+    {
+      "title": "IndexDB",
+      "view": "index-db"
+    }
+  ]
+}
