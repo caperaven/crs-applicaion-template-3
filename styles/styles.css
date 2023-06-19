@@ -109,7 +109,7 @@ nav ul li:hover {
 }
 
 nav h2 {
-    margin: 0.7rem 0;
+    margin: 0;
 }
 
 nav hr {
@@ -120,10 +120,10 @@ header {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: var(--padding);
     border-bottom: var(--border);
     background: var(--cl-primary);
     color: var(--cl-primary-contrast);
+    padding: 0 var(--padding);
 }
 
 header h2 {
