@@ -16,7 +16,7 @@
     </svg>
 
     <header>
-        <button aria-label="menu" class="icon" click.setValue="$globals.isMenuOpen = !$globals.isMenuOpen" classlist.if="$globals.isMenuOpen == true ? 'highlight-fill'">
+        <button aria-label="menu" class="icon" click.setValue="$globals.isMenuOpen = !$globals.isMenuOpen">
             <svg width="24" height="24">
                 <use xlink:href="#menu"/>
             </svg>
@@ -28,6 +28,8 @@
     <view-loader data-routes="app/routes.json">
         <aside classlist.if="$globals.isMenuOpen ? 'open'" click.setValue="$globals.isMenuOpen = !$globals.isMenuOpen">
             <nav>
+                <h2>menu</h2>
+                <hr />
                 <ul>
                     <li><a href="/welcome">Welcome</a></li>
                     <li><a href="/about">About</a></li>
