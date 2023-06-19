@@ -25,18 +25,20 @@
         <h2>Application Template</h2>
     </header>
 
-    <aside classlist.if="$globals.isMenuOpen ? 'open'">
-        <nav>
-            <ul>
-                <li><a href="/welcome">Welcome</a></li>
-                <li><a href="/about">About</a></li>
-            </ul>
-        </nav>
-    </aside>
+    <view-loader data-routes="app/routes.json">
+        <aside classlist.if="$globals.isMenuOpen ? 'open'" click.setValue="$globals.isMenuOpen = !$globals.isMenuOpen">
+            <nav>
+                <ul>
+                    <li><a href="/welcome">Welcome</a></li>
+                    <li><a href="/about">About</a></li>
+                </ul>
+            </nav>
+        </aside>
 
-    <main autofocus tabindex="0">
-        <view-loader data-routes="app/routes.json"></view-loader>
-    </main>
+        <main autofocus tabindex="0">
+
+        </main>
+    </view-loader>
 
     <footer>
         <div>copyright @my-company 2023</div>
