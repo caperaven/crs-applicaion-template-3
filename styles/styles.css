@@ -14,10 +14,13 @@
 :root {
     --padding: 0.5rem;
     --border: silver solid 1px;
+    --border-contrast: solid 1px var(--cl-primary-contrast);
 
     --cl-window: white;
-    --cl-primary: #007bff;
-    --cl-primary-contrast: white;
+    --cl-primary: #2196F3;
+    --cl-primary-contrast: #FAFAFA;
+    --cl-hover-transparent: rgba(0, 0, 0, 0.1);
+    --cl-text: #333333;
 
     --h2-margin: 0;
 }
@@ -34,6 +37,7 @@ html, body {
 body {
     display: grid;
     grid-template-rows: max-content 1fr max-content;
+    color: var(--cl-text);
 }
 
 header {
@@ -101,7 +105,15 @@ nav ul {
 }
 
 nav ul li:hover {
-    background: rgba(0, 0, 0, 0.1);
+    background: var(--cl-hover-transparent);
+}
+
+nav h2 {
+    margin: 0.7rem 0;
+}
+
+nav hr {
+    border: var(--border-contrast);
 }
 
 header {
@@ -110,6 +122,8 @@ header {
     justify-content: center;
     padding: var(--padding);
     border-bottom: var(--border);
+    background: var(--cl-primary);
+    color: var(--cl-primary-contrast);
 }
 
 header h2 {
@@ -145,13 +159,12 @@ button {
     cursor: pointer;
 }
 
-h2 {
-    margin: var(--h2-margin);
-    color: var(--cl-primary);
-}
-
 view-loader, main {
     display: grid;
+}
+
+view-loader {
+    background: var(--cl-primary-contrast);
 }
 
 main {
@@ -160,4 +173,5 @@ main {
 
 #btnMenu {
     padding: 0;
+    fill: var(--cl-primary-contrast);
 }
