@@ -157,3 +157,7 @@ view-loader, main {
 main {
     padding: var(--padding);
 }
+
+#btnMenu {
+    padding: 0;
+}
