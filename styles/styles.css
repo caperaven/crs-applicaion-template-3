@@ -16,9 +16,8 @@
     --border: silver solid 1px;
     --border-contrast: solid 1px var(--cl-primary-contrast);
 
-    --cl-window: white;
-    --cl-primary: #2196F3;
-    --cl-primary-contrast: #FAFAFA;
+    --cl-primary: #3386b8;
+    --cl-primary-contrast: white;
     --cl-hover-transparent: rgba(0, 0, 0, 0.1);
     --cl-text: #333333;
 

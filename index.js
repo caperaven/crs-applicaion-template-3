@@ -1,3 +1,4 @@
+import "/pwa.js";
 import "/packages/binding-engine3/crs-binding.js";
 import "/packages/binding-engine3/events/event-emitter.js";
 import "/packages/binding-engine3/expressions/code-factories/if.js";

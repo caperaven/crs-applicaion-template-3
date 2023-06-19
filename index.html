@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="description" content="Application template">
     <meta name="theme-color" content="#2196F3"/>
+    <link rel="manifest" href="/manifest.json">
     <link rel="stylesheet" href="/styles/styles.css">
     <title>Application Template</title>
 </head>
@@ -18,7 +19,7 @@
     </svg>
 
     <header>
-        <button id="btnMenu" aria-label="menu" class="icon" click.setValue="$globals.isMenuOpen = !$globals.isMenuOpen">
+        <button id="btnMenu" aria-label="menu" class="icon" click.setvalue="$globals.isMenuOpen = !$globals.isMenuOpen">
             <svg width="32" height="32">
                 <use xlink:href="#menu"/>
             </svg>
@@ -28,7 +29,7 @@
     </header>
 
     <view-loader data-routes="app/routes.json">
-        <aside classlist.if="$globals.isMenuOpen ? 'open'" click.setValue="$globals.isMenuOpen = !$globals.isMenuOpen">
+        <aside classlist.if="$globals.isMenuOpen ? 'open'" click.setvalue="$globals.isMenuOpen = !$globals.isMenuOpen">
             <nav>
                 <h2>menu</h2>
                 <hr />
