@@ -1,28 +1,9 @@
-// Service Worker Installation
 self.addEventListener('install', function(event) {
+    importScripts('./service-worker-files.js');
+
     event.waitUntil(
         caches.open('application-template').then(function(cache) {
-            return cache.addAll([
-                // Add URLs of assets you want to cache
-                '/welcome',
-
-                '/index.html',
-                '/index.js',
-                '/manifest.json',
-                '/favicon.ico',
-
-                '/styles/style.css',
-                '/app/routes.json',
-
-                '/app/welcome/welcome.js',
-                '/app/welcome/welcome.html',
-                '/app/welcome/welcome.css',
-
-                '/app/about/about.js',
-                '/app/about/about.html',
-                '/app/about/about.css',
-                // Add more assets to cache as needed
-            ]);
+            return cache.addAll(globalThis.installFiles);
         })
     );
 });
