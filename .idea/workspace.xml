@@ -5,9 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8248a919-6409-489f-b9fa-4ceecefc4d6c" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/theme.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/manifest.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service-worker.js" beforeDir="false" afterPath="$PROJECT_DIR$/service-worker.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pwa.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pwa.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/styles/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/styles/styles.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,6 +58,7 @@
       <recent name="F:\caperaven projects\crs-applicaion-template-3\packages\binding-engine3" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="F:\caperaven projects\crs-applicaion-template-3\src" />
       <recent name="F:\caperaven projects\crs-applicaion-template-3" />
       <recent name="F:\caperaven projects\crs-applicaion-template-3\styles" />
     </key>
@@ -93,7 +96,7 @@
       <workItem from="1687175348870" duration="720000" />
       <workItem from="1687177382529" duration="8190000" />
       <workItem from="1687186431500" duration="13153000" />
-      <workItem from="1687242750846" duration="2683000" />
+      <workItem from="1687242750846" duration="6963000" />
     </task>
     <task id="LOCAL-00001" summary="initial">
       <created>1687179819676</created>
@@ -151,7 +154,14 @@
       <option name="project" value="LOCAL" />
       <updated>1687246720751</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="initial">
+      <created>1687247405589</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1687247405589</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

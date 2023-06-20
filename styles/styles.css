@@ -13,15 +13,32 @@
 
 :root {
     --padding: 0.5rem;
-    --border: silver solid 1px;
-    --border-contrast: solid 1px var(--cl-primary-contrast);
 
     --cl-primary: #3386b8;
     --cl-primary-contrast: white;
+    --cl-window: #f5f5f5;
     --cl-hover-transparent: rgba(0, 0, 0, 0.1);
     --cl-text: #333333;
 
     --h2-margin: 0;
+}
+
+.dark-theme {
+    --cl-primary: #3386b8;
+    --cl-primary-contrast: white;
+    --cl-window: #f5f5f5;
+    --cl-text: #333333;
+    --border: silver solid 1px;
+    --border-contrast: solid 1px var(--cl-primary-contrast);
+}
+
+.light-theme {
+    --cl-primary: #ffffff;
+    --cl-primary-contrast: #3f3f3f;
+    --cl-text: #3f3f3f;
+    --cl-window: #f5f5f5;
+    --border: silver solid 1px;
+    --border-contrast: solid 1px var(--cl-primary-contrast);
 }
 
 html, body {
@@ -163,7 +180,7 @@ view-loader, main {
 }
 
 view-loader {
-    background: var(--cl-primary-contrast);
+    background: var(--cl-window);
 }
 
 main {
