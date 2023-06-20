@@ -1,7 +1,7 @@
 {
 	"name": "Application Template",
 	"short_name": "application",
-	"start_url": "/welcome",
+	"start_url": "/",
 	"display": "standalone",
 	"background_color": "#ffffff",
 	"theme_color": "#3386b8",

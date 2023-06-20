@@ -8,6 +8,7 @@ const urlsToCache = [
     "app/welcome/welcome.css",
     "app/welcome/welcome.html",
     "app/welcome/welcome.js",
+    "favicon.ico",
     "icons/icon-128x128.png",
     "icons/icon-144x144.png",
     "icons/icon-152x152.png",
