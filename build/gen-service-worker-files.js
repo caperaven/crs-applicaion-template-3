@@ -41,7 +41,7 @@ function generateServiceWorkerFiles(folder) {
             }
 
             // Add the file to the result.
-            result.push(`${folder}${file.name}`);
+            result.push(`${folder}${file.name}`.replace("./", "/"));
         }
     }
 
@@ -54,12 +54,53 @@ function generateServiceWorkerFiles(folder) {
  * @type {string}
  */
 const code = `
-globalThis.installFiles = [
-    ${generateServiceWorkerFiles().map(file => `"${file}"`).join(",\n    ")}
-]
+const urlsToCache = [
+    "/",
+    ${generateServiceWorkerFiles().map(file => {
+        if (file.startsWith("/")) {
+            return `"${file.substring(1)}"`;
+        }
+    }).join(",\n    ")}
+];
+
+const CACHE_NAME = 'your-cache-name';
+
+self.addEventListener('install', event => {
+    event.waitUntil(
+        caches.open(CACHE_NAME).then(cache => {
+            return cache.addAll(urlsToCache);
+        })
+    )
+});
+
+// Service Worker Activation
+self.addEventListener('activate', function(event) {
+    event.waitUntil(
+        caches.keys().then(function(cacheNames) {
+            return Promise.all(
+                cacheNames.filter(function(cacheName) {
+                    // Remove outdated caches
+                    // Modify 'your-cache-name' if you change the cache name in the install event
+                    return cacheName !== CACHE_NAME;
+                }).map(function(cacheName) {
+                    return caches.delete(cacheName);
+                })
+            );
+        })
+    );
+});
+
+// Service Worker Fetch
+self.addEventListener('fetch', function(event) {
+    event.respondWith(
+        caches.match(event.request).then(function(response) {
+            return response || fetch(event.request);
+        })
+    );
+});
 `
 
 /**
  * Write the source code to the service worker files.
  */
-Deno.writeTextFileSync("./service-worker-files.js", code);
+Deno.writeTextFileSync("./service-worker.js", code);

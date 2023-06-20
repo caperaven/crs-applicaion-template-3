@@ -5,10 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8248a919-6409-489f-b9fa-4ceecefc4d6c" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/build/gen-service-worker-files.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/service-worker-files.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/favicon.ico" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crs-applicaion-template-3.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/gen-service-worker-files.js" beforeDir="false" afterPath="$PROJECT_DIR$/build/gen-service-worker-files.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service-worker-files.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/service-worker.js" beforeDir="false" afterPath="$PROJECT_DIR$/service-worker.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -32,35 +33,52 @@
     <option name="showMembers" value="true" />
     <option name="showModules" value="false" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "F:/caperaven projects/crs-applicaion-template-3",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;F:/caperaven projects/crs-applicaion-template-3&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="F:\caperaven projects\crs-applicaion-template-3" />
       <recent name="F:\caperaven projects\crs-applicaion-template-3\styles" />
       <recent name="F:\caperaven projects\crs-applicaion-template-3\packages\crs-process-api" />
       <recent name="F:\caperaven projects\crs-applicaion-template-3\packages\crs-process-api\components\view-loader" />
       <recent name="F:\caperaven projects\crs-applicaion-template-3\packages\binding-engine3" />
-      <recent name="F:\caperaven projects\crs-applicaion-template-3" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="F:\caperaven projects\crs-applicaion-template-3" />
       <recent name="F:\caperaven projects\crs-applicaion-template-3\styles" />
     </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="create-worker-files" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="create-worker-files" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="npm.create-worker-files" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -77,7 +95,8 @@
       <workItem from="1687175022443" duration="312000" />
       <workItem from="1687175348870" duration="720000" />
       <workItem from="1687177382529" duration="8190000" />
-      <workItem from="1687186431500" duration="5099000" />
+      <workItem from="1687186431500" duration="13153000" />
+      <workItem from="1687242750846" duration="2148000" />
     </task>
     <task id="LOCAL-00001" summary="initial">
       <created>1687179819676</created>
@@ -121,7 +140,14 @@
       <option name="project" value="LOCAL" />
       <updated>1687195485032</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="initial">
+      <created>1687196998935</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1687196998935</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
