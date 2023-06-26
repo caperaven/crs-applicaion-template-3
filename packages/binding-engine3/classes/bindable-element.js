@@ -1,5 +1,8 @@
 class BindableElement extends HTMLElement {
   #bid;
+  get hasStyle() {
+    return true;
+  }
   get shadowDom() {
     return false;
   }
@@ -42,8 +45,11 @@ class BindableElement extends HTMLElement {
   getProperty(property) {
     return crs.binding.data.getProperty(this, property);
   }
-  setProperty(property, value) {
-    crs.binding.data.setProperty(this, property, value);
+  async setProperty(property, value) {
+    await crs.binding.data.setProperty(this, property, value);
+  }
+  async updateProperty(property, callback) {
+    await crs.binding.data.updateProperty(this, property, callback);
   }
 }
 function getHtmlPath(obj) {
@@ -69,7 +75,12 @@ async function load(component) {
 async function loadHtml(component) {
   if (component.html == null)
     return;
-  const html = await crs.binding.templates.get(component.constructor.name, getHtmlPath(component));
+  let styleLink = "";
+  if (component.hasStyle == true) {
+    styleLink = `<link rel="stylesheet" href="${component.html.replace(".html", ".css")}">`;
+  }
+  let html = await crs.binding.templates.get(component.constructor.name, getHtmlPath(component));
+  html = `${styleLink}${html}`;
   if (component.shadowRoot != null) {
     component.shadowRoot.innerHTML = html;
   } else {
