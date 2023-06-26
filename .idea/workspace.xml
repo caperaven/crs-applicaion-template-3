@@ -5,11 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8248a919-6409-489f-b9fa-4ceecefc4d6c" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/theme.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/crs-modules/crs-modules.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pwa.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pwa.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/styles/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/styles/styles.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,30 +30,31 @@
     <option name="showMembers" value="true" />
     <option name="showModules" value="false" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;F:/caperaven projects/crs-applicaion-template-3&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "F:/caperaven projects/crs-applicaion-template-3/packages",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "settings.space",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="F:\caperaven projects\crs-applicaion-template-3\packages" />
       <recent name="F:\caperaven projects\crs-applicaion-template-3" />
       <recent name="F:\caperaven projects\crs-applicaion-template-3\styles" />
       <recent name="F:\caperaven projects\crs-applicaion-template-3\packages\crs-process-api" />
       <recent name="F:\caperaven projects\crs-applicaion-template-3\packages\crs-process-api\components\view-loader" />
-      <recent name="F:\caperaven projects\crs-applicaion-template-3\packages\binding-engine3" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="F:\caperaven projects\crs-applicaion-template-3\src" />
@@ -96,7 +95,11 @@
       <workItem from="1687175348870" duration="720000" />
       <workItem from="1687177382529" duration="8190000" />
       <workItem from="1687186431500" duration="13153000" />
-      <workItem from="1687242750846" duration="6963000" />
+      <workItem from="1687242750846" duration="10348000" />
+      <workItem from="1687262912018" duration="36000" />
+      <workItem from="1687346451789" duration="605000" />
+      <workItem from="1687511730675" duration="2542000" />
+      <workItem from="1687769872925" duration="119000" />
     </task>
     <task id="LOCAL-00001" summary="initial">
       <created>1687179819676</created>
@@ -161,7 +164,14 @@
       <option name="project" value="LOCAL" />
       <updated>1687247405589</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="initial">
+      <created>1687253805700</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1687253805700</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -183,5 +193,9 @@
     <option name="CHECK_NEW_TODO" value="false" />
     <MESSAGE value="initial" />
     <option name="LAST_COMMIT_MESSAGE" value="initial" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>
