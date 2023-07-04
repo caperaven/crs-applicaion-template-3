@@ -4,7 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8248a919-6409-489f-b9fa-4ceecefc4d6c" name="Changes" comment="" />
+    <list default="true" id="8248a919-6409-489f-b9fa-4ceecefc4d6c" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/packages/binding-engine3/providers/attributes/attr-toggle.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/binding-engine3/providers/attributes/utils/get-queries.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/binding-engine3/crs-binding.js" beforeDir="false" afterPath="$PROJECT_DIR$/packages/binding-engine3/crs-binding.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/binding-engine3/events/dom-events.js" beforeDir="false" afterPath="$PROJECT_DIR$/packages/binding-engine3/events/dom-events.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/binding-engine3/providers.js" beforeDir="false" afterPath="$PROJECT_DIR$/packages/binding-engine3/providers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/binding-engine3/providers/attributes/call.js" beforeDir="false" afterPath="$PROJECT_DIR$/packages/binding-engine3/providers/attributes/call.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/binding-engine3/providers/attributes/classlist-toggle.js" beforeDir="false" afterPath="$PROJECT_DIR$/packages/binding-engine3/providers/attributes/classlist-toggle.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/binding-engine3/providers/element/template-repeat-for.js" beforeDir="false" afterPath="$PROJECT_DIR$/packages/binding-engine3/providers/element/template-repeat-for.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/binding-engine3/providers/events/keyboard-event.js" beforeDir="false" afterPath="$PROJECT_DIR$/packages/binding-engine3/providers/events/keyboard-event.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/binding-engine3/store/event-store.js" beforeDir="false" afterPath="$PROJECT_DIR$/packages/binding-engine3/store/event-store.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/binding-engine3/utils/dispose-properties.js" beforeDir="false" afterPath="$PROJECT_DIR$/packages/binding-engine3/utils/dispose-properties.js" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -31,7 +44,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "F:/caperaven projects/crs-applicaion-template-3/packages",
+    "last_opened_file_path": "F:/caperaven projects/crs-applicaion-template-3/packages/binding-engine3",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -46,11 +59,11 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="F:\caperaven projects\crs-applicaion-template-3\packages\binding-engine3" />
+      <recent name="F:\caperaven projects\crs-applicaion-template-3\packages\crs-framework" />
       <recent name="F:\caperaven projects\crs-applicaion-template-3\packages" />
       <recent name="F:\caperaven projects\crs-applicaion-template-3" />
       <recent name="F:\caperaven projects\crs-applicaion-template-3\styles" />
-      <recent name="F:\caperaven projects\crs-applicaion-template-3\packages\crs-process-api" />
-      <recent name="F:\caperaven projects\crs-applicaion-template-3\packages\crs-process-api\components\view-loader" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="F:\caperaven projects\crs-applicaion-template-3\src" />
@@ -95,7 +108,10 @@
       <workItem from="1687262912018" duration="36000" />
       <workItem from="1687346451789" duration="605000" />
       <workItem from="1687511730675" duration="2542000" />
-      <workItem from="1687769872925" duration="762000" />
+      <workItem from="1687769872925" duration="1115000" />
+      <workItem from="1688364970745" duration="92000" />
+      <workItem from="1688382814667" duration="817000" />
+      <workItem from="1688478757925" duration="46000" />
     </task>
     <task id="LOCAL-00001" summary="initial">
       <created>1687179819676</created>
@@ -174,7 +190,14 @@
       <option name="project" value="LOCAL" />
       <updated>1687770165447</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="initial">
+      <created>1687770869857</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1687770869857</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
