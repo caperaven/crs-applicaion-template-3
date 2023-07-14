@@ -1,1 +1,122 @@
-class h{static async perform(e,s,t,i){await this[e.action]?.(e,s,t,i)}static async register(e,s,t,i){const r=await crs.process.getValue(e.args.perspective,s,t,i);r!=null&&(globalThis.perspectives==null&&(globalThis.perspectives={}),globalThis.perspectives[r]==null?globalThis.perspectives[r]={count:1}:globalThis.perspectives[r].count+=1)}static async unregister(e,s,t,i){const r=await crs.process.getValue(e.args.perspective,s,t,i);if(r==null)return;const a=globalThis.perspectives[r];a!=null&&(a.count-=1,a.count===0&&delete globalThis.perspectives[r])}static async get(e,s,t,i){const r=await crs.process.getValue(e.args.perspective,s,t,i);if(r!=null)return JSON.parse(JSON.stringify(globalThis.perspectives[r]))}static async add_filter(e,s,t,i){const r=await crs.process.getValue(e.args.perspective,s,t,i),a=await crs.process.getValue(e.args.field,s,t,i),l=await crs.process.getValue(e.args.operator,s,t,i),n=await crs.process.getValue(e.args.value,s,t,i),p=await crs.process.getValue(e.args.replace||!0,s,t,i),c=globalThis.perspectives[r];if(c.filter||=[],p){const v=c.filter.filter(o=>o.field===a);for(const o of v){const d=c.filter.indexOf(o);c.filter.splice(d,1)}}const u={field:a,operator:l,value:n};c.filter.push(u),await g(r)}static async remove_filter(e,s,t,i){const r=await crs.process.getValue(e.args.perspective,s,t,i),a=globalThis.perspectives[r];if(a==null)return;const l=await crs.process.getValue(e.args.field,s,t,i),n=a.filter.find(c=>c.field===l);if(n==null)return;const p=a.filter.indexOf(n);a.filter.splice(p,1),a.filter.length===0&&delete a.filter,await g(r)}static async set_grouping(e,s,t,i){const r=await crs.process.getValue(e.args.perspective,s,t,i),a=globalThis.perspectives[r];if(a==null)return;const l=await crs.process.getValue(e.args.fields,s,t,i);a.grouping=l,await g(r)}static async expand_grouping(e,s,t,i){const r=await crs.process.getValue(e.args.perspective,s,t,i)}static async collapse_grouping(e,s,t,i){const r=await crs.process.getValue(e.args.perspective,s,t,i)}}async function g(f){if(globalThis.dataManagers!=null)for(const e of Object.keys(globalThis.dataManagers)){const s=globalThis.dataManagers[e];s.perspective===f&&await s.perspectiveChanged()}}crs.intent.perspective=h;export{g as notifyPerspectiveChanged};
+class PerspectiveManagerActions {
+  static async perform(step, context, process, item) {
+    await this[step.action]?.(step, context, process, item);
+  }
+  /**
+   * @method register - register on the perspective manager
+   * @param step {object} - the step to perform
+   * @param context {object} - the context of the step
+   * @param process {object} - the process
+   * @param item {object} - the item
+   * @returns {Promise<void>}
+   */
+  static async register(step, context, process, item) {
+    const perspective = await crs.process.getValue(step.args.perspective, context, process, item);
+    if (perspective == null)
+      return;
+    if (globalThis.perspectives == null) {
+      globalThis.perspectives = {};
+    }
+    if (globalThis.perspectives[perspective] == null) {
+      globalThis.perspectives[perspective] = {
+        count: 1
+      };
+    } else {
+      globalThis.perspectives[perspective].count += 1;
+    }
+  }
+  /**
+   * @method unregister - unregister from the perspective manager
+   * @param step {object} - the step to perform
+   * @param context {object} - the context of the step
+   * @param process {object} - the process
+   * @param item {object} - the item
+   * @returns {Promise<void>}
+   */
+  static async unregister(step, context, process, item) {
+    const perspective = await crs.process.getValue(step.args.perspective, context, process, item);
+    if (perspective == null)
+      return;
+    const definition = globalThis.perspectives[perspective];
+    if (definition == null)
+      return;
+    definition.count -= 1;
+    if (definition.count === 0) {
+      delete globalThis.perspectives[perspective];
+    }
+  }
+  static async get(step, context, process, item) {
+    const perspective = await crs.process.getValue(step.args.perspective, context, process, item);
+    if (perspective == null)
+      return;
+    return JSON.parse(JSON.stringify(globalThis.perspectives[perspective]));
+  }
+  static async add_filter(step, context, process, item) {
+    const perspective = await crs.process.getValue(step.args.perspective, context, process, item);
+    const field = await crs.process.getValue(step.args.field, context, process, item);
+    const operator = await crs.process.getValue(step.args.operator, context, process, item);
+    const value = await crs.process.getValue(step.args.value, context, process, item);
+    const replace = await crs.process.getValue(step.args.replace || true, context, process, item);
+    const definition = globalThis.perspectives[perspective];
+    definition.filter ||= [];
+    if (replace) {
+      const removeItems = definition.filter.filter((f) => f.field === field);
+      for (const removeItem of removeItems) {
+        const index = definition.filter.indexOf(removeItem);
+        definition.filter.splice(index, 1);
+      }
+    }
+    const filterDef = {
+      field,
+      operator,
+      value
+    };
+    definition.filter.push(filterDef);
+    await notifyPerspectiveChanged(perspective);
+  }
+  static async remove_filter(step, context, process, item) {
+    const perspective = await crs.process.getValue(step.args.perspective, context, process, item);
+    const definition = globalThis.perspectives[perspective];
+    if (definition == null)
+      return;
+    const field = await crs.process.getValue(step.args.field, context, process, item);
+    const removeItem = definition.filter.find((f) => f.field === field);
+    if (removeItem == null)
+      return;
+    const index = definition.filter.indexOf(removeItem);
+    definition.filter.splice(index, 1);
+    if (definition.filter.length === 0) {
+      delete definition.filter;
+    }
+    await notifyPerspectiveChanged(perspective);
+  }
+  static async set_grouping(step, context, process, item) {
+    const perspective = await crs.process.getValue(step.args.perspective, context, process, item);
+    const definition = globalThis.perspectives[perspective];
+    if (definition == null)
+      return;
+    const fields = await crs.process.getValue(step.args.fields, context, process, item);
+    definition.grouping = fields;
+    await notifyPerspectiveChanged(perspective);
+  }
+  static async expand_grouping(step, context, process, item) {
+    const perspective = await crs.process.getValue(step.args.perspective, context, process, item);
+  }
+  static async collapse_grouping(step, context, process, item) {
+    const perspective = await crs.process.getValue(step.args.perspective, context, process, item);
+  }
+}
+async function notifyPerspectiveChanged(perspective) {
+  if (globalThis.dataManagers == null)
+    return;
+  for (const key of Object.keys(globalThis.dataManagers)) {
+    const dataManager = globalThis.dataManagers[key];
+    if (dataManager.perspective === perspective) {
+      await dataManager.perspectiveChanged();
+    }
+  }
+}
+crs.intent.perspective = PerspectiveManagerActions;
+export {
+  notifyPerspectiveChanged
+};

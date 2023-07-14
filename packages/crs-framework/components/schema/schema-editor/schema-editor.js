@@ -1,4 +1,7 @@
-import"./../../text-editor/text-editor.js";import"./../../schema/schema-viewer/schema-viewer.js";import{loadHTML as i}from"./../../src/load-resources.js";const a=`{
+import "./../../text-editor/text-editor.js";
+import "./../../schema/schema-viewer/schema-viewer.js";
+import { loadHTML } from "./../../src/load-resources.js";
+const startTemplate = `{
   "variables": {
     "translations": {
       "button": "My Button"
@@ -13,4 +16,63 @@ import"./../../text-editor/text-editor.js";import"./../../schema/schema-viewer/s
     ]
   }
 }
-`;class n extends HTMLElement{#t;#s=this.#i.bind(this);#e;get parser(){return this.dataset.parser||"html"}get editor(){return this.#t==null&&(this.#t=this.querySelector("text-editor")),this.#t}async connectedCallback(){this.innerHTML=await i(import.meta.url),requestAnimationFrame(async()=>{this.editor.value=a,await this.update(),this.editor.addEventListener("change",this.#s),await crs.call("cssgrid","enable_resize",{element:this,options:{columns:[0]}})})}async disconnectedCallback(){this.editor.removeEventListener("change",this.#s),this.#s=null,await crs.call("cssgrid","disable_resize",{element:this}),this.#t=null,this.#e=null}async#i(e){if(this.#e!=!0){this.#e=!0;const t=setTimeout(()=>{clearTimeout(t),this.update(),this.#e=!1},32)}}async update(){const e=this.querySelector("schema-viewer");try{const t=this.editor.value,s=JSON.parse(t);await e.set_schema(this.parser,s)}catch{return}}}customElements.define("schema-editor",n);export{n as SchemaEditor};
+`;
+class SchemaEditor extends HTMLElement {
+  #editor;
+  #textChangedHandler = this.#textChanged.bind(this);
+  #waiting;
+  get parser() {
+    return this.dataset.parser || "html";
+  }
+  get editor() {
+    if (this.#editor == null) {
+      this.#editor = this.querySelector("text-editor");
+    }
+    return this.#editor;
+  }
+  async connectedCallback() {
+    this.innerHTML = await loadHTML(import.meta.url);
+    requestAnimationFrame(async () => {
+      this.editor.value = startTemplate;
+      await this.update();
+      this.editor.addEventListener("change", this.#textChangedHandler);
+      await crs.call("cssgrid", "enable_resize", {
+        element: this,
+        options: {
+          columns: [0]
+        }
+      });
+    });
+  }
+  async disconnectedCallback() {
+    this.editor.removeEventListener("change", this.#textChangedHandler);
+    this.#textChangedHandler = null;
+    await crs.call("cssgrid", "disable_resize", { element: this });
+    this.#editor = null;
+    this.#waiting = null;
+  }
+  async #textChanged(event) {
+    if (this.#waiting != true) {
+      this.#waiting = true;
+      const timeout = setTimeout(() => {
+        clearTimeout(timeout);
+        this.update();
+        this.#waiting = false;
+      }, 32);
+    }
+  }
+  async update() {
+    const viewer = this.querySelector("schema-viewer");
+    try {
+      const text = this.editor.value;
+      const json = JSON.parse(text);
+      await viewer.set_schema(this.parser, json);
+    } catch {
+      return;
+    }
+  }
+}
+customElements.define("schema-editor", SchemaEditor);
+export {
+  SchemaEditor
+};

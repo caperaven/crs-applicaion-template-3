@@ -1,1 +1,1 @@
-crs.modules.api=async(s,a)=>await crs.modules.add(s,a.replace(".js","-actions.js"));
+crs.modules.api = async (key, url) => await crs.modules.add(key, url.replace(".js", "-actions.js"));

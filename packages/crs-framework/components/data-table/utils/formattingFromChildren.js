@@ -1,1 +1,33 @@
-async function p(o){const s=o.querySelectorAll("formatter");if(s.length===0)return;const e={rows:[],columns:{}};for(let t of s){const r=t.dataset.condition??null,l=(t.dataset.classes??"").split(" "),a=t.dataset.styles??"",n={condition:r,classes:l,styles:a};if(t.parentElement.dataset.property==null){e.rows.push(n);continue}const c=t.parentElement.dataset.property;(e.columns[c]||=[]).push(n)}await crs.call("data_table","set_formatter",{element:o,settings:e})}export{p as formattingFromChildren};
+async function formattingFromChildren(table) {
+  const formatterElements = table.querySelectorAll("formatter");
+  if (formatterElements.length === 0)
+    return;
+  const formatSettings = {
+    rows: [],
+    columns: {}
+  };
+  for (let formatterElement of formatterElements) {
+    const condition = formatterElement.dataset.condition ?? null;
+    const classes = (formatterElement.dataset.classes ?? "").split(" ");
+    const styles = formatterElement.dataset.styles ?? "";
+    const formatter = {
+      condition,
+      classes,
+      styles
+    };
+    if (formatterElement.parentElement.dataset.property == null) {
+      formatSettings.rows.push(formatter);
+      continue;
+    }
+    const property = formatterElement.parentElement.dataset.property;
+    const propertyCollection = formatSettings.columns[property] ||= [];
+    propertyCollection.push(formatter);
+  }
+  await crs.call("data_table", "set_formatter", {
+    element: table,
+    settings: formatSettings
+  });
+}
+export {
+  formattingFromChildren
+};

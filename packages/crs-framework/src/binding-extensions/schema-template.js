@@ -1,1 +1,15 @@
-async function m(t,c,e){const r=e?.folder||"/",o=crs.binding.utils.relativePathFrom(r,t.getAttribute("schema")),i=t.dataset.parser||"html",d=await fetch(o).then(h=>h.json()),l=await crs.call("schema","parse",{id:i,schema:d}),a=document.createElement("template");a.innerHTML=l;const s=a.content.cloneNode(!0);await crs.binding.parsers.parseElements(s.children,c,e);const n=t.parentElement||t.getRootNode();n.insertBefore(s,t),n.removeChild(t)}crs.binding.templateProviders.add("schema",m);
+async function schemaTemplate(element, context, options) {
+  const folder = options?.folder || "/";
+  const file = crs.binding.utils.relativePathFrom(folder, element.getAttribute("schema"));
+  const id = element.dataset.parser || "html";
+  const schema = await fetch(file).then((result) => result.json());
+  const html = await crs.call("schema", "parse", { id, schema });
+  const tpl = document.createElement("template");
+  tpl.innerHTML = html;
+  const instance = tpl.content.cloneNode(true);
+  await crs.binding.parsers.parseElements(instance.children, context, options);
+  const parent = element.parentElement || element.getRootNode();
+  parent.insertBefore(instance, element);
+  parent.removeChild(element);
+}
+crs.binding.templateProviders.add("schema", schemaTemplate);

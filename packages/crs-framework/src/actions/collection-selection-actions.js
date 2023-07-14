@@ -1,1 +1,25 @@
-import{CollectionSelectionManager as g}from"../managers/collection-selection-manager/collection-selection-manager.js";class u{static async perform(e,a,c,n){await this[e.action]?.(e,a,c,n)}static async enable(e,a,c,n){const t=await crs.dom.get_element(e,a,c,n),l=await crs.process.getValue(e.args.selection_query,a,c,n),r=await crs.process.getValue(e.args.master_query,a,c,n),o=await crs.process.getValue(e.args.group_query,a,c,n),i=await crs.process.getValue(e.args.manager,a,c,n),s=await crs.process.getValue(e.args.virtualized_element,a,c,n);t.__collectionSelectionManager=new g(t,r,l,o,i,s)}static async disable(e,a,c,n){const t=await crs.dom.get_element(e,a,c,n);t.__collectionSelectionManager&&(t.__collectionSelectionManager=t.__collectionSelectionManager.dispose())}}crs.intent.collection_selection=u;export{u as CollectionSelectionActions};
+import { CollectionSelectionManager } from "../managers/collection-selection-manager/collection-selection-manager.js";
+class CollectionSelectionActions {
+  static async perform(step, context, process, item) {
+    await this[step.action]?.(step, context, process, item);
+  }
+  static async enable(step, context, process, item) {
+    const element = await crs.dom.get_element(step, context, process, item);
+    const selectionQuery = await crs.process.getValue(step.args.selection_query, context, process, item);
+    const masterQuery = await crs.process.getValue(step.args.master_query, context, process, item);
+    const groupQuery = await crs.process.getValue(step.args.group_query, context, process, item);
+    const manager = await crs.process.getValue(step.args.manager, context, process, item);
+    const virtualizedElement = await crs.process.getValue(step.args.virtualized_element, context, process, item);
+    element.__collectionSelectionManager = new CollectionSelectionManager(element, masterQuery, selectionQuery, groupQuery, manager, virtualizedElement);
+  }
+  static async disable(step, context, process, item) {
+    const element = await crs.dom.get_element(step, context, process, item);
+    if (element.__collectionSelectionManager) {
+      element.__collectionSelectionManager = element.__collectionSelectionManager.dispose();
+    }
+  }
+}
+crs.intent.collection_selection = CollectionSelectionActions;
+export {
+  CollectionSelectionActions
+};

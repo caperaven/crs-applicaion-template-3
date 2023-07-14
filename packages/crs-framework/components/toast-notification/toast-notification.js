@@ -1,2 +1,110 @@
-import{loadHTML as r}from"./../../src/load-resources.js";class l extends HTMLElement{#t=this.#i.bind(this);#o=Object.freeze({success:"check-circle",warning:"warning",error:"error",info:"info"});constructor(){super(),this.attachShadow({mode:"open"})}async connectedCallback(){this.shadowRoot.innerHTML=await r(import.meta.url),requestAnimationFrame(()=>this.load())}async load(){this.shadowRoot.addEventListener("click",this.#t)}async disconnectedCallback(){this.shadowRoot.removeEventListener("click",this.#t),this.shadowRoot.innerHTML="",this.#t=null}async#i(e){const t=e.composedPath(),o=t[0],i=t[1];o.id==="btnClose"&&await this.#e(i)}async#e(e){const t=e.querySelector("#btnAction");t!=null&&(t.onclick=null),e.remove(),await crs.call("fixed_position","set",{element:this,position:this.dataset.position,margin:this.dataset.margin})}#n(e,t){return new Promise(o=>{const i=setTimeout(async()=>{clearTimeout(i),await this.#e(e),o()},t)})}async show(e,t,o,i){const n=this.shadowRoot.querySelector("#toast-notification-item").content.cloneNode(!0).children[0];n.dataset.severity=o,n.querySelector("#message").innerText=t;const s=n.querySelector("#btnAction");if(i==null)s.remove();else{s.textContent=i.caption,s.onclick=i.callback;const c=n.querySelector("#btnClose");c.style.borderLeft="var(--border)"}const a=n.querySelector("icon");a.textContent=this.#o[o],a.dataset.severity=o,t.indexOf(`
-`)!==-1&&(a.style.alignSelf="flex-start"),this.shadowRoot.appendChild(n),await crs.call("fixed_position","set",{element:this,position:this.dataset.position,margin:this.dataset.margin}),await this.#n(n,e)}}customElements.define("toast-notification",l);
+import { loadHTML } from "./../../src/load-resources.js";
+class ToastNotification extends HTMLElement {
+  #clickHandler = this.#click.bind(this);
+  #icons = Object.freeze({
+    "success": "check-circle",
+    "warning": "warning",
+    "error": "error",
+    "info": "info"
+  });
+  /**
+   * @constructor
+   */
+  constructor() {
+    super();
+    this.attachShadow({ mode: "open" });
+  }
+  /**
+   * Standard connected callback lifecycle method
+   */
+  async connectedCallback() {
+    this.shadowRoot.innerHTML = await loadHTML(import.meta.url);
+    requestAnimationFrame(() => this.load());
+  }
+  /**
+   * Load resources and add event listeners
+   * @returns {Promise<void>}
+   */
+  async load() {
+    this.shadowRoot.addEventListener("click", this.#clickHandler);
+  }
+  /**
+   * Standard disconnected callback lifecycle method
+   */
+  async disconnectedCallback() {
+    this.shadowRoot.removeEventListener("click", this.#clickHandler);
+    this.shadowRoot.innerHTML = "";
+    this.#clickHandler = null;
+  }
+  /**
+   * Click handler for interacting with the toast notification
+   * @param event - The event that triggered the function.
+   */
+  async #click(event) {
+    const composition = event.composedPath();
+    const target = composition[0];
+    const parent = composition[1];
+    if (target.id === "btnClose") {
+      await this.#removeElement(parent);
+    }
+  }
+  /**
+   * It removes the element from the DOM and then calls the fixed_position set function to update the position of the
+   * element
+   * @param element - The element to remove.
+   */
+  async #removeElement(element) {
+    const btnAction = element.querySelector("#btnAction");
+    if (btnAction != null) {
+      btnAction.onclick = null;
+    }
+    element.remove();
+    await crs.call("fixed_position", "set", { element: this, position: this.dataset.position, margin: this.dataset.margin });
+  }
+  /**
+   * After a period of time remove the element from the DOM
+   * @param element {HTMLElement} - element to remove
+   * @param duration {number} - duration in milliseconds
+   */
+  #setTimeout(element, duration) {
+    return new Promise((resolve) => {
+      const timeout = setTimeout(async () => {
+        clearTimeout(timeout);
+        await this.#removeElement(element);
+        resolve();
+      }, duration);
+    });
+  }
+  /**
+   * Show a toast notification
+   * @param duration {number} - duration in milliseconds that the toast will be displayed
+   * @param message {string} - message to display
+   * @param severity {string} - severity of the toast notification, "info"|"error"|"warning|"success"
+   * @param action - action to perform when the action button is clicked
+   * @returns {Promise<void>}
+   */
+  async show(duration, message, severity, action) {
+    const toast = this.shadowRoot.querySelector("#toast-notification-item").content.cloneNode(true).children[0];
+    toast.dataset.severity = severity;
+    toast.querySelector("#message").innerText = message;
+    const btnAction = toast.querySelector("#btnAction");
+    if (action == null) {
+      btnAction.remove();
+    } else {
+      btnAction.textContent = action.caption;
+      btnAction.onclick = action.callback;
+      const btnClose = toast.querySelector("#btnClose");
+      btnClose.style.borderLeft = "var(--border)";
+    }
+    const icon = toast.querySelector("icon");
+    icon.textContent = this.#icons[severity];
+    icon.dataset.severity = severity;
+    if (message.indexOf("\n") !== -1) {
+      icon.style.alignSelf = "flex-start";
+    }
+    this.shadowRoot.appendChild(toast);
+    await crs.call("fixed_position", "set", { element: this, position: this.dataset.position, margin: this.dataset.margin });
+    await this.#setTimeout(toast, duration);
+  }
+}
+customElements.define("toast-notification", ToastNotification);

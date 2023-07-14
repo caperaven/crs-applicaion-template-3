@@ -1,1 +1,16 @@
-async function s(n,o){const e=[],l=n.querySelectorAll("column");for(let t of l)e.push({title:t.dataset.heading,width:t.dataset.width,property:t.dataset.property,dataType:t.dataset.type||"string"});o.set(e)}export{s as columnsFromChildren};
+async function columnsFromChildren(table, columnsManager) {
+  const columns = [];
+  const columnElements = table.querySelectorAll("column");
+  for (let columnElement of columnElements) {
+    columns.push({
+      title: columnElement.dataset.heading,
+      width: columnElement.dataset.width,
+      property: columnElement.dataset.property,
+      dataType: columnElement.dataset.type || "string"
+    });
+  }
+  columnsManager.set(columns);
+}
+export {
+  columnsFromChildren
+};

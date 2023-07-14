@@ -1,1 +1,53 @@
-function s(e){e.addColumnElements=d,e.removeColumnElements=a}async function d(e){let t=0;for(const n of e){const l=await crs.call("dom","create_element",{tag_name:"crs-widget",text_content:n.title,id:n.id,attributes:{"data-name":n.title,role:"columnheader"}});this.header.appendChild(l);const o=await crs.call("dom","create_element",{id:t,attributes:{role:"cell"},dataset:{index:t}});n.container=o,this.container.appendChild(o),t+=1}dispatchEvent(new CustomEvent("columns-added",{bubbles:!0,composed:!0,detail:this}))}async function a(e,t){dispatchEvent(new CustomEvent("columns-removed",{bubbles:!0,composed:!0,detail:this}))}async function m(e,t){dispatchEvent(new CustomEvent("columns-moved",{bubbles:!0,composed:!0,detail:this}))}export{s as addColumnFeatures};
+function addColumnFeatures(instance) {
+  instance.addColumnElements = addColumnElements;
+  instance.removeColumnElements = removeColumnElements;
+}
+async function addColumnElements(columns) {
+  let index = 0;
+  for (const column of columns) {
+    const header = await crs.call("dom", "create_element", {
+      tag_name: "crs-widget",
+      text_content: column.title,
+      id: column.id,
+      attributes: {
+        "data-name": column.title,
+        role: "columnheader"
+      }
+    });
+    this.header.appendChild(header);
+    const cell = await crs.call("dom", "create_element", {
+      id: index,
+      attributes: {
+        role: "cell"
+      },
+      dataset: {
+        index
+      }
+    });
+    column.container = cell;
+    this.container.appendChild(cell);
+    index += 1;
+  }
+  dispatchEvent(new CustomEvent("columns-added", {
+    bubbles: true,
+    composed: true,
+    detail: this
+  }));
+}
+async function removeColumnElements(index, count) {
+  dispatchEvent(new CustomEvent("columns-removed", {
+    bubbles: true,
+    composed: true,
+    detail: this
+  }));
+}
+async function moveColumnElement(from, to) {
+  dispatchEvent(new CustomEvent("columns-moved", {
+    bubbles: true,
+    composed: true,
+    detail: this
+  }));
+}
+export {
+  addColumnFeatures
+};

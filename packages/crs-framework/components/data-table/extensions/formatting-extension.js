@@ -1,1 +1,101 @@
-import{DataTableExtensions as u}from"./../data-table-extensions.js";class a{#t;#s;constructor(t,n){this.#t=n,this.#s=t}dispose(){return this.#t=null,this.#s=null,u.FORMATTING.path}#n(t){(this.#t.rows??[]).length!==0&&this.#e(t,this.#t.rows,"rowElement")}#o(t){if(this.#t.columns!=null){t.push("let cellElement;");for(const n of Object.keys(this.#t.columns)){const e=this.#t.columns[n];t.push("cellElement = rowElement.children["+this.#s.getColumnIndex(n)+"];"),t.push("cellElement.classList = [];"),this.#e(t,e,"cellElement")}}}#e(t,n,e){const o=new Set,l=[];for(const i of n){if(m(i.styles,`${e}`,o),i.condition!=null){l.push(`if (${i.condition}) {`),r(i.classes,`    ${e}`,l),c(i.styles,`    ${e}`,l),l.push("}");continue}r(i.classes,e,l),c(i.styles,e,l)}const h=Array.from(o);t.push(...h,...l)}createFormattingCode(t){t.push("rowElement.classList = [];"),this.#n(t),this.#o(t)}}function r(s,t,n){s||=[];for(const e of s)n.push(`${t}.classList.add("${e}");`)}function c(s,t,n){if(s||="",s.length!==0){s=s.split(";");for(const e of s){const o=e.split(":");o.length>1&&n.push(`${t}.style["${o[0].trim()}"] = "${o[1].trim()}";`)}}}function m(s,t,n){if(s||="",s.length!==0){s=s.split(";");for(const e of s){const o=e.split(":");o.length>1&&n.add(`${t}.style["${o[0].trim()}"] = "";`)}}}export{a as default};
+import { DataTableExtensions } from "./../data-table-extensions.js";
+class FormattingExtension {
+  #settings;
+  #table;
+  constructor(table, settings) {
+    this.#settings = settings;
+    this.#table = table;
+  }
+  dispose() {
+    this.#settings = null;
+    this.#table = null;
+    return DataTableExtensions.FORMATTING.path;
+  }
+  #createRowCode(code) {
+    if ((this.#settings.rows ?? []).length === 0) {
+      return;
+    }
+    this.#createPaintCode(code, this.#settings.rows, "rowElement");
+  }
+  #createCellCode(code) {
+    if (this.#settings.columns == null) {
+      return;
+    }
+    code.push("let cellElement;");
+    for (const columnName of Object.keys(this.#settings.columns)) {
+      const columnSettings = this.#settings.columns[columnName];
+      code.push("cellElement = rowElement.children[" + this.#table.getColumnIndex(columnName) + "];");
+      code.push("cellElement.classList = [];");
+      this.#createPaintCode(code, columnSettings, "cellElement");
+    }
+  }
+  /**
+   * @method #createPaintCode - create the code to apply the formatting to the data table.
+   * @param code {Array} - The code to add the formatting code to.
+   * @param settings {Array} - The settings to apply to the data table.
+   * @param prefix {string} - The prefix to use for the code indicating the element to use.
+   */
+  #createPaintCode(code, settings, prefix) {
+    const resetStyleCode = /* @__PURE__ */ new Set();
+    const applyStyleCode = [];
+    for (const setting of settings) {
+      clearStylesCode(setting.styles, `${prefix}`, resetStyleCode);
+      if (setting.condition != null) {
+        applyStyleCode.push(`if (${setting.condition}) {`);
+        classesToCode(setting.classes, `    ${prefix}`, applyStyleCode);
+        stylesToCode(setting.styles, `    ${prefix}`, applyStyleCode);
+        applyStyleCode.push("}");
+        continue;
+      }
+      classesToCode(setting.classes, prefix, applyStyleCode);
+      stylesToCode(setting.styles, prefix, applyStyleCode);
+    }
+    const resetStyleCodeArray = Array.from(resetStyleCode);
+    code.push(...resetStyleCodeArray, ...applyStyleCode);
+  }
+  /**
+   * @method createFormattingCode - create the code to apply the formatting to the data table.
+   * @param code {Array} - The code to add the formatting code to.
+   * @returns {Promise<void>}
+   */
+  createFormattingCode(code) {
+    code.push(`rowElement.classList = [];`);
+    this.#createRowCode(code);
+    this.#createCellCode(code);
+  }
+}
+function classesToCode(classes, prefix, code) {
+  classes ||= [];
+  for (const cls of classes) {
+    code.push(`${prefix}.classList.add("${cls}");`);
+  }
+}
+function stylesToCode(styles, prefix, code) {
+  styles ||= "";
+  if (styles.length === 0) {
+    return;
+  }
+  styles = styles.split(";");
+  for (const style of styles) {
+    const parts = style.split(":");
+    if (parts.length > 1) {
+      code.push(`${prefix}.style["${parts[0].trim()}"] = "${parts[1].trim()}";`);
+    }
+  }
+}
+function clearStylesCode(styles, prefix, code) {
+  styles ||= "";
+  if (styles.length === 0) {
+    return;
+  }
+  styles = styles.split(";");
+  for (const style of styles) {
+    const parts = style.split(":");
+    if (parts.length > 1) {
+      code.add(`${prefix}.style["${parts[0].trim()}"] = "";`);
+    }
+  }
+}
+export {
+  FormattingExtension as default
+};

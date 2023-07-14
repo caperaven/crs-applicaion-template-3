@@ -1,1 +1,79 @@
-import{DataTableExtensions as l}from"./../data-table-extensions.js";class o{#s;#e;#t;#i=this.#l.bind(this);constructor(t,e){this.#s=e,this.#e=t}dispose(t){if(this.#t&&(crs.call("dom_interactive","disable_resize",{element:this.#t}).catch(e=>console.error(e)),this.#t=null),t===!0){const e=this.#e.element.querySelectorAll(".resize");for(const s of e)s.remove()}return this.#i=null,this.#s=null,this.#e=null,l.RESIZE.path}#n(t){this.#t=t,crs.call("dom_interactive","enable_resize",{element:t,resize_query:".resize",options:{lock_axis:"x",zIndex:"1",dropShadow:!0,callback:this.#i}}).catch(e=>console.error(e))}#l(t){const e=getComputedStyle(this.#e).getPropertyValue("--columns").split(" "),s=t.offsetWidth,n=t.parentElement||t.getRootNode(),i=Array.from(n.children).indexOf(t);e[i]=`${s}px`,this.#e.style.setProperty("--columns",e.join(" "))}initialize(t){for(const e of t.children){if(e.children.length==0){const n=e.textContent,i=document.createElement("div");i.textContent=n,e.textContent="",i.classList.add("flex"),e.appendChild(i)}const s=document.createElement("div");s.classList.add("resize"),s.textContent="drag-vert-alt",e.appendChild(s)}this.#n(t)}}export{o as default};
+import { DataTableExtensions } from "./../data-table-extensions.js";
+class ResizeExtension {
+  #settings;
+  #table;
+  #parent;
+  #callbackHandler = this.#callback.bind(this);
+  /**
+   * @constructor
+   * @param table {DataTable} - The data table to add the resize elements to.
+   * @param settings {Object} - The settings for the resize extension.
+   */
+  constructor(table, settings) {
+    this.#settings = settings;
+    this.#table = table;
+  }
+  dispose(removeUI) {
+    if (this.#parent) {
+      crs.call("dom_interactive", "disable_resize", {
+        element: this.#parent
+      }).catch((error) => console.error(error));
+      this.#parent = null;
+    }
+    if (removeUI === true) {
+      const resizeElements = this.#table.element.querySelectorAll(".resize");
+      for (const resizeElement of resizeElements) {
+        resizeElement.remove();
+      }
+    }
+    this.#callbackHandler = null;
+    this.#settings = null;
+    this.#table = null;
+    return DataTableExtensions.RESIZE.path;
+  }
+  #enableResize(parent) {
+    this.#parent = parent;
+    crs.call("dom_interactive", "enable_resize", {
+      element: parent,
+      resize_query: ".resize",
+      options: {
+        lock_axis: "x",
+        zIndex: "1",
+        dropShadow: true,
+        callback: this.#callbackHandler
+      }
+    }).catch((error) => console.error(error));
+  }
+  #callback(element) {
+    const widths = getComputedStyle(this.#table).getPropertyValue("--columns").split(" ");
+    const width = element.offsetWidth;
+    const parentElement = element.parentElement || element.getRootNode();
+    const index = Array.from(parentElement.children).indexOf(element);
+    widths[index] = `${width}px`;
+    this.#table.style.setProperty("--columns", widths.join(" "));
+  }
+  /**
+   * @function initialize - add the resize elements to the column headers and enable the resize functionality.
+   * @param columnsRow {HTMLElement} - The row containing the column headers.
+   */
+  initialize(columnsRow) {
+    for (const column of columnsRow.children) {
+      if (column.children.length == 0) {
+        const text = column.textContent;
+        const textDiv = document.createElement("div");
+        textDiv.textContent = text;
+        column.textContent = "";
+        textDiv.classList.add("flex");
+        column.appendChild(textDiv);
+      }
+      const resizeElement = document.createElement("div");
+      resizeElement.classList.add("resize");
+      resizeElement.textContent = "drag-vert-alt";
+      column.appendChild(resizeElement);
+    }
+    this.#enableResize(columnsRow);
+  }
+}
+export {
+  ResizeExtension as default
+};

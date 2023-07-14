@@ -1,2 +1,13 @@
-import{DataTableExtensions as l}from"../data-table-extensions.js";async function i(o,n,r){const t=[`rowElement.dataset.id = model["${r??"id"}"];`];for(let e=0;e<n.length;e++){const a=n[e];t.push(`rowElement.children[${e}].textContent = model["${a.property}"];`)}return await o.callExtension(l.FORMATTING.name,"createFormattingCode",t),new crs.classes.AsyncFunction("model","rowElement",t.join(`
-`))}export{i as rowInflationFactory};
+import { DataTableExtensions } from "../data-table-extensions.js";
+async function rowInflationFactory(table, columns, idField) {
+  const code = [`rowElement.dataset.id = model["${idField ?? "id"}"];`];
+  for (let i = 0; i < columns.length; i++) {
+    const column = columns[i];
+    code.push(`rowElement.children[${i}].textContent = model["${column.property}"];`);
+  }
+  await table.callExtension(DataTableExtensions.FORMATTING.name, "createFormattingCode", code);
+  return new crs.classes.AsyncFunction("model", "rowElement", code.join("\n"));
+}
+export {
+  rowInflationFactory
+};

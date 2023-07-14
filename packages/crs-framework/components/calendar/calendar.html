@@ -1,1 +1,38 @@
-<template id=tplCell><div classlist.case="current == false ? 'non-current-day', new Date().toLocaleDateString() === date.toLocaleDateString() ? 'today'"aria-selected=${selected} data-day=${date.getDate()} data-month=${date.getMonth()} data-year=${date.getFullYear()} role=cell tabindex=-1>${number}</div></template><template id=tplYears><div data-type=year-cell data-value=${year} tabindex=-1>${year}</div></template><div id=calendar-toolbar ref=tools role=toolbar><button aria-label="Previous month"data-action=goToPrevious id=previous-month tooltip=Previous>chevron-left</button><button aria-label="Month selector"classlist.if="selectedView == 'months' ? 'current-view'"data-action=selectView id=month tooltip=Months value=months>${selectedMonthText}</button><button aria-label="Year selector"classlist.if="selectedView == 'years' ? 'current-view'"data-action=selectView id=year tooltip=Years value=years>${selectedYearText}</button><button aria-label="Next month"data-action=goToNext id=next-month tooltip=Next>chevron-right</button></div><perspective-element ctx.once=bid id=perspectiveElement ref=perspectiveElement view.bind=selectedView> <template data-default=true data-id=default><template data-css=true src=$context.folder/days.html></template></template> <template data-id=months><template data-css=true src=$context.folder/months.html></template></template> <template data-id=years><template data-css=true src=$context.folder/years.html></template></template> </perspective-element>
+<template id="tplCell">
+    <div role="cell" tabindex="-1" aria-selected="${selected}" data-day="${date.getDate()}"
+         data-month="${date.getMonth()}" data-year="${date.getFullYear()}"
+         classlist.case="current == false ? 'non-current-day', new Date().toLocaleDateString() === date.toLocaleDateString() ? 'today'">
+        ${number}
+    </div>
+</template>
+<template id="tplYears">
+    <div data-type="year-cell" tabindex="-1" data-value="${year}">${year}</div>
+</template>
+
+<div id="calendar-toolbar" role="toolbar" ref="tools">
+    <button id="previous-month" aria-label="Previous month" tooltip="Previous" data-action="goToPrevious">chevron-left
+    </button>
+    <button id="month" aria-label="Month selector" value="months" tooltip="Months" data-action="selectView"
+            classlist.if="selectedView == 'months' ? 'current-view'">${selectedMonthText}
+    </button>
+    <button id="year" aria-label="Year selector" value="years" tooltip="Years" data-action="selectView"
+            classlist.if="selectedView == 'years' ? 'current-view'">${selectedYearText}
+    </button>
+    <button id="next-month" aria-label="Next month" tooltip="Next" data-action="goToNext">chevron-right</button>
+</div>
+
+<perspective-element
+        id="perspectiveElement"
+        view.bind="selectedView"
+        ctx.once="bid"
+        ref="perspectiveElement">
+    <template data-id="default" data-default="true">
+        <template src="$context.folder/days.html" data-css="true"></template>
+    </template>
+    <template data-id="months">
+        <template src="$context.folder/months.html" data-css="true"></template>
+    </template>
+    <template data-id="years">
+        <template src="$context.folder/years.html" data-css="true"></template>
+    </template>
+</perspective-element>

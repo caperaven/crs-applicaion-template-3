@@ -1,1 +1,11 @@
-async function r(t,n=!0){let e=await fetch(t.replace(".js",".html")).then(l=>l.text());return n&&(e=`${`<link rel="stylesheet" href="${t.replace(".js",".css")}">`}${e}`),e}export{r as loadHTML};
+async function loadHTML(path, withCSS = true) {
+  let html = await fetch(path.replace(".js", ".html")).then((response) => response.text());
+  if (withCSS) {
+    const link = `<link rel="stylesheet" href="${path.replace(".js", ".css")}">`;
+    html = `${link}${html}`;
+  }
+  return html;
+}
+export {
+  loadHTML
+};

@@ -1,1 +1,21 @@
-import{DataManagerMemoryProvider as e}from"./data-manager-memory-provider.js";import{DataManagerIDBProvider as r}from"./data-manager-idb-provider.js";import{DataManagerPerspectiveProvider as t}from"./data-manager-perspective-provider.js";const d=Object.freeze({memory:e,idb:r,perspective:t}),c=Object.freeze({add:"add",update:"update",delete:"delete",refresh:"refresh",selected:"selected",perspectiveChanged:"perspective_changed",perspectiveRollback:"perspective_rollback"});export{c as CHANGE_TYPES,d as MANAGER_TYPES};
+import { DataManagerMemoryProvider } from "./data-manager-memory-provider.js";
+import { DataManagerIDBProvider } from "./data-manager-idb-provider.js";
+import { DataManagerPerspectiveProvider } from "./data-manager-perspective-provider.js";
+const MANAGER_TYPES = Object.freeze({
+  memory: DataManagerMemoryProvider,
+  idb: DataManagerIDBProvider,
+  perspective: DataManagerPerspectiveProvider
+});
+const CHANGE_TYPES = Object.freeze({
+  add: "add",
+  update: "update",
+  delete: "delete",
+  refresh: "refresh",
+  selected: "selected",
+  perspectiveChanged: "perspective_changed",
+  perspectiveRollback: "perspective_rollback"
+});
+export {
+  CHANGE_TYPES,
+  MANAGER_TYPES
+};

@@ -1,1 +1,157 @@
-const h=Object.freeze(["0","#","_"]);class f{#i;#r;#h;#t;#e;get value(){return this.#r}get currentIndex(){return this.#t}get isFilled(){return this.#h.indexOf("_")==-1}constructor(t,i){this.#i=t,this.#e=i,this.#r=n(t),this.#h=this.#r.split(""),this.setCursor(0),this.#s()}dispose(){return this.#i=null,this.#r=null,this.#h=null,this.#t=null,this.#e=null,null}#n(){if(this.#t==this.#i.length)return!1;const t=this.#i[this.#t];return h.indexOf(t)!=-1==!0||(this.#t+=1,this.#n()),!0}#s(){this.#r=this.#h.join(""),this.#e?.(this.#r,this.#t)}setCursor(t){this.#t=t,this.#n(),this.#s()}set(t){this.#t!=this.#i.length&&this.#n()==!0&&u(this.#i[this.#t],t)&&(this.#h[this.#t]=t,this.#t+=1,this.#t>=this.#i.length&&(this.#t=this.#i.length),this.#s())}clearBack(t,i){if(t=t||this.#t,i=i||t,i-t==this.#i.length)return this.clear();if(i-t>1&&t!=null&&i!=null)return this.clear(t,i);if(this.#t==0)return;this.#t=t-1;const e=this.#i[this.#t];h.indexOf(e)!=-1?(this.#h[this.#t]="_",this.#s()):this.clearBack(t-1,i-1)}clear(t,i){if(t==null)return this.#h=n(this.#i).split(""),this.setCursor(0),this.#s();for(let r=t;r<i;r++){const e=this.#i[r];h.indexOf(e)!=-1&&(this.#h[r]="_")}this.setCursor(t),this.#s()}moveIndexLeft(){if(this.#t==0)return;let t=this.#i[this.#t-1];if(h.indexOf(t)!=-1)return this.#t-=1,this.#s();for(let i=this.#t;i>0;i--)if(t=this.#i[i-1],h.indexOf(t)!=-1){this.#t=i;break}return this.#s()}moveIndexRight(){if(this.#t+=1,this.#t>=this.#i.length)return this.#t=this.#i.length,this.#s();const t=this.#i[this.#t];h.indexOf(t)==-1&&this.moveIndexRight(),this.#s()}}function n(s){return s.split("0").join("_").split("#").join("_")}function u(s,t){const i=isNaN(t);return i==!0&&(s=="#"||s=="_")||i==!1&&(s=="#"||s=="0")}export{f as MaskManager,u as canEdit,n as maskToText};
+const maskValues = Object.freeze(["0", "#", "_"]);
+class MaskManager {
+  #mask;
+  #text;
+  #values;
+  #index;
+  #updateCallback;
+  get value() {
+    return this.#text;
+  }
+  get currentIndex() {
+    return this.#index;
+  }
+  get isFilled() {
+    return this.#values.indexOf("_") == -1;
+  }
+  constructor(mask, updateCallback) {
+    this.#mask = mask;
+    this.#updateCallback = updateCallback;
+    this.#text = maskToText(mask);
+    this.#values = this.#text.split("");
+    this.setCursor(0);
+    this.#notifyUpdate();
+  }
+  dispose() {
+    this.#mask = null;
+    this.#text = null;
+    this.#values = null;
+    this.#index = null;
+    this.#updateCallback = null;
+    return null;
+  }
+  /**
+   * step the index until it finds a valid input
+   */
+  #stepCursor() {
+    if (this.#index == this.#mask.length)
+      return false;
+    const maskAt = this.#mask[this.#index];
+    const validIndex = maskValues.indexOf(maskAt) != -1;
+    if (validIndex == true)
+      return true;
+    this.#index += 1;
+    this.#stepCursor();
+    return true;
+  }
+  #notifyUpdate() {
+    this.#text = this.#values.join("");
+    this.#updateCallback?.(this.#text, this.#index);
+  }
+  /**
+   * set the cursor position
+   * @param index
+   */
+  setCursor(index) {
+    this.#index = index;
+    this.#stepCursor();
+    this.#notifyUpdate();
+  }
+  /**
+   * Set the value
+   * @param char
+   */
+  set(char) {
+    if (this.#index == this.#mask.length)
+      return;
+    if (this.#stepCursor() == true && canEdit(this.#mask[this.#index], char)) {
+      this.#values[this.#index] = char;
+      this.#index += 1;
+      if (this.#index >= this.#mask.length) {
+        this.#index = this.#mask.length;
+      }
+      this.#notifyUpdate();
+    }
+  }
+  clearBack(selectionStart, selectionEnd) {
+    selectionStart = selectionStart || this.#index;
+    selectionEnd = selectionEnd || selectionStart;
+    if (selectionEnd - selectionStart == this.#mask.length) {
+      return this.clear();
+    }
+    const diff = selectionEnd - selectionStart;
+    if (diff > 1 && selectionStart != null && selectionEnd != null) {
+      return this.clear(selectionStart, selectionEnd);
+    }
+    if (this.#index == 0)
+      return;
+    this.#index = selectionStart - 1;
+    const maskAt = this.#mask[this.#index];
+    if (maskValues.indexOf(maskAt) != -1) {
+      this.#values[this.#index] = "_";
+      this.#notifyUpdate();
+    } else {
+      this.clearBack(selectionStart - 1, selectionEnd - 1);
+    }
+  }
+  clear(start, end) {
+    if (start == null) {
+      this.#values = maskToText(this.#mask).split("");
+      this.setCursor(0);
+      return this.#notifyUpdate();
+    }
+    for (let i = start; i < end; i++) {
+      const maskAt = this.#mask[i];
+      if (maskValues.indexOf(maskAt) != -1) {
+        this.#values[i] = "_";
+      }
+    }
+    this.setCursor(start);
+    this.#notifyUpdate();
+  }
+  moveIndexLeft() {
+    if (this.#index == 0)
+      return;
+    let maskAt = this.#mask[this.#index - 1];
+    if (maskValues.indexOf(maskAt) != -1) {
+      this.#index -= 1;
+      return this.#notifyUpdate();
+    }
+    for (let i = this.#index; i > 0; i--) {
+      maskAt = this.#mask[i - 1];
+      if (maskValues.indexOf(maskAt) != -1) {
+        this.#index = i;
+        break;
+      }
+    }
+    return this.#notifyUpdate();
+  }
+  moveIndexRight() {
+    this.#index += 1;
+    if (this.#index >= this.#mask.length) {
+      this.#index = this.#mask.length;
+      return this.#notifyUpdate();
+    }
+    const maskAt = this.#mask[this.#index];
+    if (maskValues.indexOf(maskAt) == -1) {
+      this.moveIndexRight();
+    }
+    this.#notifyUpdate();
+  }
+}
+function maskToText(mask) {
+  return mask.split("0").join("_").split("#").join("_");
+}
+function canEdit(maskValue, char) {
+  const isAlpha = isNaN(char);
+  if (isAlpha == true && (maskValue == "#" || maskValue == "_"))
+    return true;
+  if (isAlpha == false && (maskValue == "#" || maskValue == "0"))
+    return true;
+  return false;
+}
+export {
+  MaskManager,
+  canEdit,
+  maskToText
+};

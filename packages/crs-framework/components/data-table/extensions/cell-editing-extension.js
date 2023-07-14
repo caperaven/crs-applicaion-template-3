@@ -1,1 +1,24 @@
-import{DataTableExtensions as l}from"./../data-table-extensions.js";class s{#t;#e;constructor(t,e){this.#t=e,this.#e=t}dispose(){return this.#t=null,this.#e=null,l.CELL_EDITING.path}toggleEditing(t){}}export{s as default};
+import { DataTableExtensions } from "./../data-table-extensions.js";
+class CellEditingExtension {
+  #settings;
+  #table;
+  constructor(table, settings) {
+    this.#settings = settings;
+    this.#table = table;
+  }
+  dispose() {
+    this.#settings = null;
+    this.#table = null;
+    return DataTableExtensions.CELL_EDITING.path;
+  }
+  /**
+   * @method toggleEditing - toggle the editing state of the cell.
+   * If a cell is not in edit state then add edit features.
+   * If the cell is already being edited then update the value and exit edit state.
+   */
+  toggleEditing(cellElement) {
+  }
+}
+export {
+  CellEditingExtension as default
+};

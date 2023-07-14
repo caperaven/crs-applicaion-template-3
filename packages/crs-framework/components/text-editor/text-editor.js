@@ -1,1 +1,63 @@
-import{EditorView as e,basicSetup as i,markdown as n,json as a,css as h,javascript as l,html as o,autocompletion as r,keymap as c,indentWithTab as u}from"./editor.js";const d=Object.freeze({markdown:n,json:a,javascript:l,css:h,html:o});class m extends HTMLElement{#t;#e;#s;get editor(){return this.#t}get value(){return this.#n()}set value(t){this.#e=t,this.#t!=null&&this.#i(t)}get language(){return this.dataset.language||"markdown"}async connectedCallback(){const t=this.innerHTML.trim();this.innerHTML="",this.#s=e.updateListener.of(s=>{s.docChanged==!0&&this.dispatchEvent(new CustomEvent("change",{detail:this.#n(),bubbles:!0,composed:!0}))}),this.#t=new e({extensions:[i,d[this.language](),r(),this.#s,c.of([u])],parent:this}),this.#e!=null?this.#i(this.#e):t.length>0&&this.#i(t),await crs.call("component","notify_ready",{element:this})}async disconnectedCallback(){this.#t=null,this.#s=null,this.#e=null}#i(t){this.#t.dispatch({changes:{from:0,to:this.#t.state.doc.length,insert:t}})}#n(){return this.#t==null?"":this.#t.state.doc.toString()}}customElements.define("text-editor",m);
+import { EditorView, basicSetup, markdown, json, css, javascript, html, autocompletion, keymap, indentWithTab } from "./editor.js";
+const LANGUAGES = Object.freeze({
+  "markdown": markdown,
+  "json": json,
+  "javascript": javascript,
+  "css": css,
+  "html": html
+});
+class TextEditor extends HTMLElement {
+  #editor;
+  #value;
+  #update;
+  get editor() {
+    return this.#editor;
+  }
+  get value() {
+    return this.#getValue();
+  }
+  set value(newValue) {
+    this.#value = newValue;
+    if (this.#editor != null) {
+      this.#setValue(newValue);
+    }
+  }
+  get language() {
+    return this.dataset.language || "markdown";
+  }
+  async connectedCallback() {
+    const content = this.innerHTML.trim();
+    this.innerHTML = "";
+    this.#update = EditorView.updateListener.of((update) => {
+      if (update.docChanged == true) {
+        this.dispatchEvent(new CustomEvent("change", { detail: this.#getValue(), bubbles: true, composed: true }));
+      }
+    });
+    this.#editor = new EditorView({
+      extensions: [basicSetup, LANGUAGES[this.language](), autocompletion(), this.#update, keymap.of([indentWithTab])],
+      parent: this
+    });
+    if (this.#value != null) {
+      this.#setValue(this.#value);
+    } else if (content.length > 0) {
+      this.#setValue(content);
+    }
+    await crs.call("component", "notify_ready", { element: this });
+  }
+  async disconnectedCallback() {
+    this.#editor = null;
+    this.#update = null;
+    this.#value = null;
+  }
+  #setValue(text) {
+    this.#editor.dispatch({
+      changes: { from: 0, to: this.#editor.state.doc.length, insert: text }
+    });
+  }
+  #getValue() {
+    if (this.#editor == null)
+      return "";
+    return this.#editor.state.doc.toString();
+  }
+}
+customElements.define("text-editor", TextEditor);

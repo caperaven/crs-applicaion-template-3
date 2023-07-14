@@ -1,1 +1,151 @@
-import"./color-gradient.js";import"./color-panel.js";class l extends crs.classes.BindableElement{#e;#l;#n;#s;#t;#i=!1;#c=this.#b.bind(this);#h=this.#y.bind(this);#a=this.#v.bind(this);#p=this.#x.bind(this);#u=this.#f.bind(this);#r=this.#C.bind(this);#o;#d;get shadowDom(){return!0}get html(){return import.meta.url.replace(".js",".html")}get baseColor(){return this.getAttribute("value")}set baseColor(t){this.value=t,this.setAttribute("value",t),this.dispatchEvent(new CustomEvent("change",{bubbles:!0,composed:!0}))}static get observedAttributes(){return["value"]}async connectedCallback(){await super.connectedCallback(),this.#e=this.getBoundingClientRect(),this.#l=this.panel.getBoundingClientRect(),this.#n=this.gradient.getBoundingClientRect(),this.panel.setAttribute("value",this.baseColor||"#FF0000"),this.registerEvent(this.panel,"mousedown",this.#c),this.registerEvent(this.gradient,"mousedown",this.#p)}async disconnectedCallback(){this.#e=null,this.#l=null,this.#n=null,this.#s=null,this.#t=null,this.#i=null,this.#c=null,this.#h=null,this.#a=null,this.#p=null,this.#u=null,this.#r=null,this.#o=null,this.#d=null,super.disconnectedCallback()}async attributeChangedCallback(t,s,i){this.panel?.setAttribute("value",i)}async#b(t){t.preventDefault(),this.#o=this.panel.getContext("2d",{willReadFrequently:!0}),this.#i=!0,this.#s=t.clientX-this.#e.x,this.#t=t.clientY-this.#e.y,this.registerEvent(document,"mousemove",this.#h),this.registerEvent(document,"mouseup",this.#a),await this.#g()}async#y(t){t.preventDefault();const s=n({x:t.clientX,y:t.clientY},this.#l);this.#s=s.x-this.#e.left,this.#t=s.y-this.#e.top;const i=this.panel.get(this.#s,this.#t)}async#v(t){t.preventDefault(),this.#i=!1,this.unregisterEvent(document,"mousemove",this.#h),this.unregisterEvent(document,"mouseup",this.#a),this.#s=null,this.#t=null,this.#o=null}async#g(){requestAnimationFrame(()=>{this.#i!=!1&&(this.panelSelector.style.translate=`${this.#s-8}px ${this.#t-8}px`,this.#g())})}async#m(){requestAnimationFrame(()=>{this.#i!=!1&&(this.gradientSelector.style.translate=`0px ${this.#t-4}px`,this.#m())})}async#x(t){t.preventDefault(),this.#d=this.gradient.getContext("2d",{willReadFrequently:!0}),this.#i=!0,this.#t=t.clientY-this.#e.y,this.registerEvent(document,"mousemove",this.#u),this.registerEvent(document,"mouseup",this.#r),await this.#m()}async#f(t){t.preventDefault();const s=n({x:t.clientX,y:t.clientY},this.#n);this.#t=s.y-this.#e.top;const i=this.gradient.get(1,this.#t);await this.panel.pushUpdate(i)}async#C(t){t.preventDefault();const s=n({x:t.clientX,y:t.clientY},this.#n);this.#t=s.y-this.#e.top;const i=this.gradient.get(1,this.#t);await this.panel.pushUpdate(i),this.#i=!1,this.unregisterEvent(document,"mousemove",this.#u),this.unregisterEvent(document,"mouseup",this.#r),this.#t=null,this.#s=null,this.#d=null}}function n(e,t){return e.x<t.x&&(e.x=t.x),e.x>t.right&&(e.x=t.right),e.y<t.y&&(e.y=t.y),e.y>t.bottom-1&&(e.y=t.bottom-1),e}customElements.define("color-picker",l);
+import "./color-gradient.js";
+import "./color-panel.js";
+class ColorPicker extends crs.classes.BindableElement {
+  #bounds;
+  #panelBounds;
+  #gradientBounds;
+  #x;
+  #y;
+  #panelMove = false;
+  #panelMouseDownHandler = this.#panelMouseDown.bind(this);
+  #panelMouseMoveHandler = this.#panelMouseMove.bind(this);
+  #panelMouseUpHandler = this.#panelMouseUp.bind(this);
+  #gradientMouseDownHandler = this.#gradientMouseDown.bind(this);
+  #gradientMouseMoveHandler = this.#gradientMouseMove.bind(this);
+  #gradientMouseUpHandler = this.#gradientMouseUp.bind(this);
+  #panelCtx;
+  #gradientCtx;
+  get shadowDom() {
+    return true;
+  }
+  get html() {
+    return import.meta.url.replace(".js", ".html");
+  }
+  get baseColor() {
+    return this.getAttribute("value");
+  }
+  set baseColor(newValue) {
+    this.value = newValue;
+    this.setAttribute("value", newValue);
+    this.dispatchEvent(new CustomEvent("change", { bubbles: true, composed: true }));
+  }
+  static get observedAttributes() {
+    return ["value"];
+  }
+  async connectedCallback() {
+    await super.connectedCallback();
+    this.#bounds = this.getBoundingClientRect();
+    this.#panelBounds = this.panel.getBoundingClientRect();
+    this.#gradientBounds = this.gradient.getBoundingClientRect();
+    this.panel.setAttribute("value", this.baseColor || "#FF0000");
+    this.registerEvent(this.panel, "mousedown", this.#panelMouseDownHandler);
+    this.registerEvent(this.gradient, "mousedown", this.#gradientMouseDownHandler);
+  }
+  async disconnectedCallback() {
+    this.#bounds = null;
+    this.#panelBounds = null;
+    this.#gradientBounds = null;
+    this.#x = null;
+    this.#y = null;
+    this.#panelMove = null;
+    this.#panelMouseDownHandler = null;
+    this.#panelMouseMoveHandler = null;
+    this.#panelMouseUpHandler = null;
+    this.#gradientMouseDownHandler = null;
+    this.#gradientMouseMoveHandler = null;
+    this.#gradientMouseUpHandler = null;
+    this.#panelCtx = null;
+    this.#gradientCtx = null;
+    super.disconnectedCallback();
+  }
+  async attributeChangedCallback(name, oldValue, newValue) {
+    this.panel?.setAttribute("value", newValue);
+  }
+  async #panelMouseDown(event) {
+    event.preventDefault();
+    this.#panelCtx = this.panel.getContext("2d", { willReadFrequently: true });
+    this.#panelMove = true;
+    this.#x = event.clientX - this.#bounds.x;
+    this.#y = event.clientY - this.#bounds.y;
+    this.registerEvent(document, "mousemove", this.#panelMouseMoveHandler);
+    this.registerEvent(document, "mouseup", this.#panelMouseUpHandler);
+    await this.#panelAnimate();
+  }
+  async #panelMouseMove(event) {
+    event.preventDefault();
+    const point = ptInRect({ x: event.clientX, y: event.clientY }, this.#panelBounds);
+    this.#x = point.x - this.#bounds.left;
+    this.#y = point.y - this.#bounds.top;
+    const rgb = this.panel.get(this.#x, this.#y);
+  }
+  async #panelMouseUp(event) {
+    event.preventDefault();
+    this.#panelMove = false;
+    this.unregisterEvent(document, "mousemove", this.#panelMouseMoveHandler);
+    this.unregisterEvent(document, "mouseup", this.#panelMouseUpHandler);
+    this.#x = null;
+    this.#y = null;
+    this.#panelCtx = null;
+  }
+  async #panelAnimate() {
+    requestAnimationFrame(() => {
+      if (this.#panelMove == false)
+        return;
+      this.panelSelector.style.translate = `${this.#x - 8}px ${this.#y - 8}px`;
+      this.#panelAnimate();
+    });
+  }
+  async #gradientAnimate() {
+    requestAnimationFrame(() => {
+      if (this.#panelMove == false)
+        return;
+      this.gradientSelector.style.translate = `0px ${this.#y - 4}px`;
+      this.#gradientAnimate();
+    });
+  }
+  async #gradientMouseDown(event) {
+    event.preventDefault();
+    this.#gradientCtx = this.gradient.getContext("2d", { willReadFrequently: true });
+    this.#panelMove = true;
+    this.#y = event.clientY - this.#bounds.y;
+    this.registerEvent(document, "mousemove", this.#gradientMouseMoveHandler);
+    this.registerEvent(document, "mouseup", this.#gradientMouseUpHandler);
+    await this.#gradientAnimate();
+  }
+  async #gradientMouseMove(event) {
+    event.preventDefault();
+    const point = ptInRect({ x: event.clientX, y: event.clientY }, this.#gradientBounds);
+    this.#y = point.y - this.#bounds.top;
+    const rgb = this.gradient.get(1, this.#y);
+    await this.panel.pushUpdate(rgb);
+  }
+  async #gradientMouseUp(event) {
+    event.preventDefault();
+    const point = ptInRect({ x: event.clientX, y: event.clientY }, this.#gradientBounds);
+    this.#y = point.y - this.#bounds.top;
+    const rgb = this.gradient.get(1, this.#y);
+    await this.panel.pushUpdate(rgb);
+    this.#panelMove = false;
+    this.unregisterEvent(document, "mousemove", this.#gradientMouseMoveHandler);
+    this.unregisterEvent(document, "mouseup", this.#gradientMouseUpHandler);
+    this.#y = null;
+    this.#x = null;
+    this.#gradientCtx = null;
+  }
+}
+function ptInRect(point, rect) {
+  if (point.x < rect.x) {
+    point.x = rect.x;
+  }
+  if (point.x > rect.right) {
+    point.x = rect.right;
+  }
+  if (point.y < rect.y) {
+    point.y = rect.y;
+  }
+  if (point.y > rect.bottom - 1) {
+    point.y = rect.bottom - 1;
+  }
+  return point;
+}
+customElements.define("color-picker", ColorPicker);

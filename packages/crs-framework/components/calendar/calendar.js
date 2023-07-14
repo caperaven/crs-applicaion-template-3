@@ -1,1 +1,368 @@
-import{CalendarUtils as r}from"./calendar-utils.js";import{CalendarKeyboardInputManager as c}from"./managers/calendar-keyboard-input-manager.js";class o extends crs.classes.BindableElement{#t;#e;#h;#i;#S;#n;#l;#o;#r={yearsVisualSelection:this.#P.bind(this),monthsVisualSelection:this.#m.bind(this),defaultVisualSelection:this.#w.bind(this)};#c={goToPrevious:this.goToPrevious.bind(this),goToNext:this.goToNext.bind(this),selectView:this.#q.bind(this),selectedDate:this.selectedDate.bind(this)};get shadowDom(){return!0}get selectedView(){return this.getProperty("selectedView")}get html(){return import.meta.url.replace(".js",".html")}static get observedAttributes(){return["data-start"]}async preLoad(){this.setProperty("folder",import.meta.url.replace("/calendar.js","/templates")),this.setProperty("selectedView","default"),await this.#s(),await this.#a()}async load(){this.#l=this.shadowRoot.querySelector("#perspectiveElement"),this.#o=this.#T.bind(this),this.#l.addEventListener("view-loaded",this.#o);const t=this.shadowRoot.querySelector("#tplCell");await crs.binding.inflation.manager.register("calendar-cell",t);const e=this.shadowRoot.querySelector("#tplYears");await crs.binding.inflation.manager.register("calendar-years",e),this.#h=new c(this),this.#i=this.#x.bind(this),this.addEventListener("change-month",this.#i),this.#n=this.#k.bind(this),this.addEventListener("click",this.#n)}async disconnectedCallback(){await crs.binding.inflation.manager.unregister("calendar-cell"),await crs.binding.inflation.manager.unregister("calendar-years"),this.removeEventListener("change-month",this.#i),this.#t=null,this.#e=null,this.#S=null,await this.#v(this.#r),this.#r=null,this.#h=this.#h.dispose(),this.#i=null,await this.#v(this.#c),this.#c=null,this.removeEventListener("click",this.#n),this.#n=null,this.#l.removeEventListener("view-loaded",this.#o),this.#l=null,this.#o=null,await super.disconnectedCallback()}async attributeChangedCallback(t,e,s){if(s==null)return;const a=new Date(s);this.#t=a.getMonth(),this.#e=a.getFullYear(),await this.#s(),await this.#a(),s!==e&&await this.#w()}async#d(){if(this.calendars==null)return;const t=await crs.call("date","get_days",{month:this.#t,year:this.#e,only_current:!1}),e=this.shadowRoot.querySelectorAll("[role='cell']");await crs.binding.inflation.manager.get("calendar-cell",t,e),await this.#p(),await this.#f()}async#D(){const t=new Date().getFullYear(),e=r.getYearsAround(t,-30,30),s=this.shadowRoot.querySelectorAll("[data-type='year-cell']");await crs.binding.inflation.manager.get("calendar-years",e,s);const a=await this.#u(this.#e);a.scrollIntoView({block:"start",behavior:"smooth"}),a.focus()}async#s(){this.setProperty("selectedMonthText",new Date(this.#e,this.#t).toLocaleString(navigator.language,{month:"long"})),this.setProperty("selectedMonth",this.#t),this.selectedView==="months"&&await this.#m()}async#a(){this.setProperty("selectedYearText",this.#e),this.setProperty("selectedYear",this.#e)}async#u(t){const e=this.shadowRoot.querySelector(`[data-value = '${t}']`);return await crs.call("dom_collection","toggle_selection",{target:e,multiple:!1}),e.setAttribute("tabindex","0"),e}async#y(){this.setProperty("selectedView","default")}async#P(){requestAnimationFrame(async()=>await this.#D())}async#m(){(await this.#u(this.#t)).focus()}async#w(){requestAnimationFrame(async()=>{await this.#d()})}async#T(){const t=this.selectedView;this.#r[`${t}VisualSelection`]&&await this.#r[`${t}VisualSelection`]()}async selectedMonthChanged(t){t!==this.#t&&t!=null&&(this.#t=Number.parseInt(t)>11?parseInt(this.#t):t,await this.#s(),t!=null&&await this.#y())}async selectedYearChanged(t){t!==this.#e&&t!=null&&(this.#e=t.toString().length<4?parseInt(this.#e):t,await this.#a(),t!=null&&await this.#y())}async selectedDate(t,e){e.getAttribute("role")==="cell"&&(await this.#A(e),await this.#g(e),this.dispatchEvent(new CustomEvent("date-selected",{bubbles:!0,composed:!0,detail:{date:this.dataset.start}})),await this.#p(e),await this.#f())}async#x(t){const e=t.detail;if(await this.#g(e),e.classList[0]==="non-current-day"){const s=parseInt(e.dataset.month),a=parseInt(e.dataset.year);this.#t>s&&this.#e<a?await this.goToNext():this.#t<s&&this.#e>a?await this.goToPrevious():this.#t>s?await this.goToPrevious():await this.goToNext()}t.stopPropagation()}async#A(t){const e=new Date(new Date(t.dataset.year,t.dataset.month,t.dataset.day).getTime()-new Date().getTimezoneOffset()*60*1e3);this.setAttribute("data-start",e.toISOString().slice(0,10))}async#g(t){const e=new Date(new Date(t.dataset.year,t.dataset.month,t.dataset.day).getTime()-new Date().getTimezoneOffset()*60*1e3);this.calendars?.setAttribute("data-position",e.toISOString().slice(0,10))}async#f(){const t=this.calendars?.querySelectorAll("[tabindex='0']"),e=this.calendars?.querySelector("[aria-selected='true']"),s=this.calendars?.querySelector(".today"),a=await this.#b(this.calendars?.dataset.position),n=this.calendars?.querySelector("[data-day='1']:not([class = '.non-current-day'])");await this.#E(t);const i=[{condition:e==null&&s!=null&&a==null,element:s},{condition:e==null&&s==null&&a==null,element:n},{condition:e!=null&&s==null&&a==null,element:e},{condition:e!=null&&s!=null&&a==null,element:e},{condition:e!=null&&s!=null&&a!=null,element:a,tabIndex:-1},{condition:e==null&&s==null&&a!=null,element:a},{condition:e==null&&s!=null&&a!=null,element:a},{condition:e!=null&&s==null&&a!=null,element:a}];for(const l of i)if(l.condition){await this.#I(l.element,l.tabIndex);break}}async#I(t,e){t!=null&&(t.tabIndex=0,t.focus())}async#E(t){if(t!=null)for(const e of t)e.tabIndex=-1}async#p(){const t=await this.#b(this.dataset.start);t!=null&&await crs.call("dom_collection","toggle_selection",{target:t,multiple:!1})}async#b(t){if(t==null)return;const e=new Date(t),s=e.getFullYear(),a=e.getMonth(),n=e.getDate(),i=this.calendars?.querySelector(`[data-day= '${n}'][data-month= '${a}'][data-year= '${s}']`);return i||null}async#k(t){const e=t.composedPath()[0],s=e.dataset.action||e.parentElement?.dataset.action;s!=null&&this.#c[s]!=null&&await this.#c[s](t,e)}async#q(t,e){const a={default:{month:"months",year:"years"},months:{year:"years"},years:{month:"months"}}[this.selectedView]?.[e.id]||"default";this.setProperty("selectedView",a)}async goToNext(){this.selectedView==="years"?this.#e++:(this.#t++,this.#t>11&&(this.#t=0,this.#e++)),await this.#s(),await this.#a(),await this.#d()}async goToPrevious(){this.selectedView==="years"?this.#e--:(this.#t--,this.#t<0&&(this.#t=11,this.#e--)),await this.#s(),await this.#a(),await this.#d()}async#v(t){for(const e of Object.keys(t))t[e]=null}}customElements.define("calendar-component",o);export{o as default};
+import { CalendarUtils } from "./calendar-utils.js";
+import { CalendarKeyboardInputManager } from "./managers/calendar-keyboard-input-manager.js";
+class Calendar extends crs.classes.BindableElement {
+  #month;
+  #year;
+  #keyboardInputManager;
+  #changeMonthHandler;
+  #dateSelected;
+  #clickHandler;
+  #perspectiveElement;
+  #perspectiveHandler;
+  #viewLoadActions = {
+    "yearsVisualSelection": this.#yearsVisualSelection.bind(this),
+    "monthsVisualSelection": this.#monthsVisualSelection.bind(this),
+    "defaultVisualSelection": this.#defaultVisualSelection.bind(this)
+  };
+  #actions = {
+    "goToPrevious": this.goToPrevious.bind(this),
+    "goToNext": this.goToNext.bind(this),
+    "selectView": this.#selectView.bind(this),
+    "selectedDate": this.selectedDate.bind(this)
+  };
+  get shadowDom() {
+    return true;
+  }
+  get selectedView() {
+    return this.getProperty("selectedView");
+  }
+  get html() {
+    return import.meta.url.replace(".js", ".html");
+  }
+  static get observedAttributes() {
+    return ["data-start"];
+  }
+  async preLoad() {
+    this.setProperty("folder", import.meta.url.replace("/calendar.js", "/templates"));
+    this.setProperty("selectedView", "default");
+    await this.#setMonthProperty();
+    await this.#setYearProperty();
+  }
+  async load() {
+    this.#perspectiveElement = this.shadowRoot.querySelector("#perspectiveElement");
+    this.#perspectiveHandler = this.#viewLoaded.bind(this);
+    this.#perspectiveElement.addEventListener("view-loaded", this.#perspectiveHandler);
+    const tplCell = this.shadowRoot.querySelector("#tplCell");
+    await crs.binding.inflation.manager.register("calendar-cell", tplCell);
+    const tplYears = this.shadowRoot.querySelector("#tplYears");
+    await crs.binding.inflation.manager.register("calendar-years", tplYears);
+    this.#keyboardInputManager = new CalendarKeyboardInputManager(this);
+    this.#changeMonthHandler = this.#changeMonth.bind(this);
+    this.addEventListener("change-month", this.#changeMonthHandler);
+    this.#clickHandler = this.#clickValidator.bind(this);
+    this.addEventListener("click", this.#clickHandler);
+  }
+  async disconnectedCallback() {
+    await crs.binding.inflation.manager.unregister("calendar-cell");
+    await crs.binding.inflation.manager.unregister("calendar-years");
+    this.removeEventListener("change-month", this.#changeMonthHandler);
+    this.#month = null;
+    this.#year = null;
+    this.#dateSelected = null;
+    await this.#cleaner(this.#viewLoadActions);
+    this.#viewLoadActions = null;
+    this.#keyboardInputManager = this.#keyboardInputManager.dispose();
+    this.#changeMonthHandler = null;
+    await this.#cleaner(this.#actions);
+    this.#actions = null;
+    this.removeEventListener("click", this.#clickHandler);
+    this.#clickHandler = null;
+    this.#perspectiveElement.removeEventListener("view-loaded", this.#perspectiveHandler);
+    this.#perspectiveElement = null;
+    this.#perspectiveHandler = null;
+    await super.disconnectedCallback();
+  }
+  async attributeChangedCallback(name, oldValue, newValue) {
+    if (newValue == null)
+      return;
+    const date = new Date(newValue);
+    this.#month = date.getMonth();
+    this.#year = date.getFullYear();
+    await this.#setMonthProperty();
+    await this.#setYearProperty();
+    newValue !== oldValue && await this.#defaultVisualSelection();
+  }
+  /**
+   * @method #render -  The function gets the data for the month and year, inflates the cells with the data, and then sets the focus on
+   * the cell that was previously focused
+   */
+  async #render() {
+    if (this.calendars == null)
+      return;
+    const data = await crs.call("date", "get_days", { month: this.#month, year: this.#year, only_current: false });
+    const cells = this.shadowRoot.querySelectorAll("[role='cell']");
+    await crs.binding.inflation.manager.get("calendar-cell", data, cells);
+    await this.#setSelection();
+    await this.#setFocus();
+  }
+  /**
+   * @method #renderYears - The function renders the years in the calendar when switching to years view.
+   */
+  async #renderYears() {
+    const year = (/* @__PURE__ */ new Date()).getFullYear();
+    const years = CalendarUtils.getYearsAround(year, -30, 30);
+    const cells = this.shadowRoot.querySelectorAll("[data-type='year-cell']");
+    await crs.binding.inflation.manager.get("calendar-years", years, cells);
+    const element = await this.#setMonthAndYearAria(this.#year);
+    element.scrollIntoView({ block: "start", behavior: "smooth" });
+    element.focus();
+  }
+  /**
+   * @method #setMonthProperty - It sets the month text property and sets the selected month property. If the selected
+   * view is months, it sets the months view.
+   */
+  async #setMonthProperty() {
+    this.setProperty("selectedMonthText", new Date(this.#year, this.#month).toLocaleString(navigator.language, { month: "long" }));
+    this.setProperty("selectedMonth", this.#month);
+    this.selectedView === "months" && await this.#monthsVisualSelection();
+  }
+  /**
+   * @method #setYearProperty - This function sets the selected year property and then sets the years view if the
+   * selected view is years.
+   */
+  async #setYearProperty() {
+    this.setProperty("selectedYearText", this.#year);
+    this.setProperty("selectedYear", this.#year);
+  }
+  /**
+   * @method #setMonthAndYearAria - This function sets the month OR year aria attributes on the selected element.
+   * @param newValue - The value of the month or year you want to select.
+   * @returns The element that was selected.
+   */
+  async #setMonthAndYearAria(newValue) {
+    const element = this.shadowRoot.querySelector(`[data-value = '${newValue}']`);
+    await crs.call("dom_collection", "toggle_selection", { target: element, multiple: false });
+    element.setAttribute("tabindex", "0");
+    return element;
+  }
+  /**
+   * @method #setDefaultView - This function sets the selectedView property to "default"
+   */
+  async #setDefaultView() {
+    this.setProperty("selectedView", "default");
+  }
+  /**
+   * @method #setFocusOnRender - The function sets the year aria, focus on the element, and set the columns property.
+   */
+  async #yearsVisualSelection() {
+    requestAnimationFrame(async () => await this.#renderYears());
+  }
+  /**
+   * @method #monthsVisualSelection - The function set the month aria, focus on the element, and set the columns property.
+   */
+  async #monthsVisualSelection() {
+    const element = await this.#setMonthAndYearAria(this.#month);
+    element.focus();
+  }
+  /**
+   * @method #defaultVisualSelection - The function renders the calendar and set the columns property.
+   */
+  async #defaultVisualSelection() {
+    requestAnimationFrame(async () => {
+      await this.#render();
+    });
+  }
+  async #viewLoaded() {
+    const view = this.selectedView;
+    if (this.#viewLoadActions[`${view}VisualSelection`]) {
+      await this.#viewLoadActions[`${view}VisualSelection`]();
+    }
+  }
+  /**
+   * @method selectedMonthChanged - The function is called when the selectedMonth property changes and renders the calendar.
+   * @description The function is a binding engine convention it listens for the property to change.
+   * @param newValue - The new value of the selected month.
+   */
+  async selectedMonthChanged(newValue) {
+    if (newValue !== this.#month && newValue != null) {
+      this.#month = Number.parseInt(newValue) > 11 ? parseInt(this.#month) : newValue;
+      await this.#setMonthProperty();
+      newValue != null && await this.#setDefaultView();
+    }
+  }
+  /**
+   * @method selectedYearChanged - The function is called when the selectedYear property changes and renders the calendar.
+   * @description The function is a binding engine convention it listens for the property to change.
+   * @param newValue - The new value of the property.
+   */
+  async selectedYearChanged(newValue) {
+    if (newValue !== this.#year && newValue != null) {
+      this.#year = newValue.toString().length < 4 ? parseInt(this.#year) : newValue;
+      await this.#setYearProperty();
+      newValue != null && await this.#setDefaultView();
+    }
+  }
+  /**
+   * @method selectedDate - The function is called when a user clicks on a date in the calendar
+   * @param event - The event that triggered the function.
+   */
+  async selectedDate(event, target) {
+    if (target.getAttribute("role") !== "cell")
+      return;
+    await this.#setDataStart(target);
+    await this.#trackFocus(target);
+    this.dispatchEvent(new CustomEvent("date-selected", {
+      bubbles: true,
+      composed: true,
+      detail: { date: this.dataset.start }
+    }));
+    await this.#setSelection(target);
+    await this.#setFocus();
+  }
+  async #changeMonth(event) {
+    const element = event.detail;
+    await this.#trackFocus(element);
+    if (element.classList[0] === "non-current-day") {
+      const month = parseInt(element.dataset.month);
+      const year = parseInt(element.dataset.year);
+      if (this.#month > month && this.#year < year) {
+        await this.goToNext();
+      } else if (this.#month < month && this.#year > year) {
+        await this.goToPrevious();
+      } else {
+        this.#month > month ? await this.goToPrevious() : await this.goToNext();
+      }
+    }
+    event.stopPropagation();
+  }
+  /**
+   * @method #setDataStart - It sets the data-start attribute to the date selected by the user.
+   * @param newValue - The new value of the attribute.
+   *
+   * @example
+   * format of the date is yyyy-mm-dd
+   */
+  async #setDataStart(newValue) {
+    const dateObject = new Date(new Date(newValue.dataset.year, newValue.dataset.month, newValue.dataset.day).getTime() - (/* @__PURE__ */ new Date()).getTimezoneOffset() * 60 * 1e3);
+    this.setAttribute("data-start", dateObject.toISOString().slice(0, 10));
+  }
+  async #trackFocus(newValue) {
+    const dateObject = new Date(new Date(newValue.dataset.year, newValue.dataset.month, newValue.dataset.day).getTime() - (/* @__PURE__ */ new Date()).getTimezoneOffset() * 60 * 1e3);
+    this.calendars?.setAttribute("data-position", dateObject.toISOString().slice(0, 10));
+  }
+  /**
+   * @method setFocusOnRender - The function gets the currently selected tab, then gets all the tabs, then sets the tabIndex of the currently
+   * selected tab to -1, and the tabIndex of the newly selected tab to 0
+   *
+   * Scenarios:
+   * 1. no selection or previous focus use current date
+   * 2. no current date or previous focus date ,set selected date as focused date
+   * 3. changing months focus must move to new focus date and all other tab indexes must be set to -1.
+   * 4. staying on the same month and changing selection, unset current focus and set it to the new selected date.
+   */
+  async #setFocus() {
+    const elementList = this.calendars?.querySelectorAll("[tabindex='0']");
+    const selectedElement = this.calendars?.querySelector("[aria-selected='true']");
+    const currentDate = this.calendars?.querySelector(".today");
+    const focusDate = await this.#get_element(this.calendars?.dataset.position);
+    const firstDayOfMonth = this.calendars?.querySelector("[data-day='1']:not([class = '.non-current-day'])");
+    await this.#resetFocus(elementList);
+    const focusConditions = [
+      { condition: selectedElement == null && currentDate != null && focusDate == null, element: currentDate },
+      { condition: selectedElement == null && currentDate == null && focusDate == null, element: firstDayOfMonth },
+      { condition: selectedElement != null && currentDate == null && focusDate == null, element: selectedElement },
+      { condition: selectedElement != null && currentDate != null && focusDate == null, element: selectedElement },
+      { condition: selectedElement != null && currentDate != null && focusDate != null, element: focusDate, tabIndex: -1 },
+      { condition: selectedElement == null && currentDate == null && focusDate != null, element: focusDate },
+      { condition: selectedElement == null && currentDate != null && focusDate != null, element: focusDate },
+      { condition: selectedElement != null && currentDate == null && focusDate != null, element: focusDate }
+    ];
+    for (const condition of focusConditions) {
+      if (condition.condition) {
+        await this.#changeTabIndexAndSetFocus(condition.element, condition.tabIndex);
+        break;
+      }
+    }
+  }
+  async #changeTabIndexAndSetFocus(element, status) {
+    if (element == null)
+      return;
+    element.tabIndex = 0;
+    element.focus();
+  }
+  async #resetFocus(elements) {
+    if (elements == null)
+      return;
+    for (const element of elements) {
+      element.tabIndex = -1;
+    }
+  }
+  async #setSelection() {
+    const element = await this.#get_element(this.dataset.start);
+    if (element != null) {
+      await crs.call("dom_collection", "toggle_selection", { target: element, multiple: false });
+    }
+  }
+  /**
+   * @method #get_elements - Takes in a date object and returns and element that matches the date, month, and year.
+   * @param data
+   * @returns {Element}
+   */
+  async #get_element(data) {
+    if (data == null)
+      return;
+    const date = new Date(data);
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const day = date.getDate();
+    const element = this.calendars?.querySelector(`[data-day= '${day}'][data-month= '${month}'][data-year= '${year}']`);
+    return element ? element : null;
+  }
+  async #clickValidator(event) {
+    const target = event.composedPath()[0];
+    const action = target.dataset.action || target.parentElement?.dataset.action;
+    if (action == null)
+      return;
+    if (this.#actions[action] != null) {
+      await this.#actions[action](event, target);
+    }
+  }
+  async #selectView(event, target) {
+    const views = {
+      "default": { month: "months", year: "years" },
+      "months": { year: "years" },
+      "years": { month: "months" }
+    };
+    const selectedView = views[this.selectedView]?.[target.id] || "default";
+    this.setProperty("selectedView", selectedView);
+  }
+  /**
+   * @method goToNext - If the selected view is years, increment the year by one. Otherwise, increment the month by one and if the month
+   * is greater than 11, set the month to 0 and increment the year by one
+   */
+  async goToNext() {
+    if (this.selectedView === "years") {
+      this.#year++;
+    } else {
+      this.#month++;
+      this.#month > 11 && (this.#month = 0, this.#year++);
+    }
+    await this.#setMonthProperty();
+    await this.#setYearProperty();
+    await this.#render();
+  }
+  /**
+   * @method goToPrevious - If the selected view is years, then decrement the year by one. Otherwise, decrement the month by one and if the
+   * month is less than zero, then set the month to 11 and decrement the year by one
+   */
+  async goToPrevious() {
+    if (this.selectedView === "years") {
+      this.#year--;
+    } else {
+      this.#month--;
+      this.#month < 0 && (this.#month = 11, this.#year--);
+    }
+    await this.#setMonthProperty();
+    await this.#setYearProperty();
+    await this.#render();
+  }
+  async #cleaner(object) {
+    for (const key of Object.keys(object)) {
+      object[key] = null;
+    }
+  }
+}
+customElements.define("calendar-component", Calendar);
+export {
+  Calendar as default
+};

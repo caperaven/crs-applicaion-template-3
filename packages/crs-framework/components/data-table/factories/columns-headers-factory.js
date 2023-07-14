@@ -1,1 +1,20 @@
-import{DataTableExtensions as i}from"../data-table-extensions.js";async function r(o,n){let e=document.createElement("div");e.role="row",e.classList.add("header");for(const a of o){let t=document.createElement("div");t.role="columnheader",t.dataset.field=a.property,t.dataset.type=a.dataType,t.textContent=a.title,e.appendChild(t)}return await n.callExtension(i.FILTER.name,"initialize",e),await n.callExtension(i.RESIZE.name,"initialize",e),e}export{r as columnsHeadersFactory};
+import { DataTableExtensions } from "../data-table-extensions.js";
+async function columnsHeadersFactory(columns, table) {
+  let header = document.createElement("div");
+  header.role = "row";
+  header.classList.add("header");
+  for (const column of columns) {
+    let th = document.createElement("div");
+    th.role = "columnheader";
+    th.dataset.field = column.property;
+    th.dataset.type = column.dataType;
+    th.textContent = column.title;
+    header.appendChild(th);
+  }
+  await table.callExtension(DataTableExtensions.FILTER.name, "initialize", header);
+  await table.callExtension(DataTableExtensions.RESIZE.name, "initialize", header);
+  return header;
+}
+export {
+  columnsHeadersFactory
+};

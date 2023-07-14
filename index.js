@@ -1,12 +1,12 @@
-import "/src/pwa.js";
+// import "/src/pwa.js";
 import "/src/theme.js";
-import "/packages/binding-engine3/crs-binding.js";
-import "/packages/binding-engine3/events/event-emitter.js";
-import "/packages/binding-engine3/expressions/code-factories/if.js";
-import "/packages/binding-engine3/classes/bindable-element.js";
-import "/packages/crs-modules/crs-modules.js";
-import {initialize} from "/packages/crs-process-api/crs-process-api.js";
-import "/packages/crs-process-api/components/view-loader/view-loader.js";
+import "/packages/crs-framework/packages/crs-binding/crs-binding.js";
+import "/packages/crs-framework/packages/crs-binding/events/event-emitter.js";
+import "/packages/crs-framework/packages/crs-binding/expressions/code-factories/if.js";
+import "/packages/crs-framework/packages/crs-binding/classes/bindable-element.js";
+import "/packages/crs-framework/packages/crs-modules/crs-modules.js";
+import {initialize} from "/packages/crs-framework/packages/crs-process-api/crs-process-api.js";
+import "/packages/crs-framework/packages/crs-process-api/components/view-loader/view-loader.js";
 
 class IndexViewModel {
     #bid;
@@ -22,5 +22,5 @@ class IndexViewModel {
     }
 }
 
-await initialize("/packages/crs-process-api/");
+await initialize("/packages/crs-framework/packages/crs-process-api/");
 globalThis.indexViewModel = new IndexViewModel();

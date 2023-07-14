@@ -1,1 +1,159 @@
-import{BaseDataManager as i}from"./data-manager-base.js";const t="data-manager";class d extends i{#e;#s;get storeName(){return this.#e}set records(e){this.setRecords(e).catch(s=>console.error(s))}dispose(){crs.call("idb","release_stores",{name:t,stores:[this.#e]}).catch(e=>console.error(e)),super.dispose()}async setRecords(e){await super.setRecords(e);const s=await crs.call("idb","set",{name:t,store:this.#e,records:e,clear:!0});this.#e=s.data,this.#s=`${t}_${this.#e}`}async append(...e){await crs.call("idb","set",{name:t,store:this.#e,records:e,clear:!1})}async getAll(){return await crs.call("idb","get_all",{name:t,store:this.#e})}async getPage(e,s){return await crs.call("idb","get_batch",{name:t,store:this.#e,startIndex:e,endIndex:s})}async getByIndex(e){return await crs.call("idb","get",{name:t,store:this.#e,indexes:[e]})}async getById(e){return await crs.call("idb","get_by_id",{name:t,store:this.#e,id:e})}async getIds(e){const s=await crs.call("idb","get",{name:t,store:this.#e,indexes:e}),a=[];for(const r of s)a.push(r[this.idField])}async removeIndexes(e){await crs.call("idb","delete_by_index",{name:t,store:this.#e,index:e})}async removeIds(e){await crs.call("idb","delete_by_id",{name:t,store:this.#e,ids:e})}async updateIndex(e,s){await crs.call("idb","change_by_index",{name:t,store:this.#e,index:e,changes:s})}async updateId(e,s){await crs.call("idb","change_by_id",{name:t,store:this.#e,id:e,changes:s})}async setSelectedIndexes(e,s){const a=e.map(r=>({type:"index",values:{index:r,selected:s}}));sessionStorage.setItem(this.#s,JSON.stringify(a))}async setSelectedIds(e,s){const a=await crs.call("idb","get_by_id",{name:t,store:this.#e,ids:e});return await this.setSelectedIndexes(a,s)}async getSelected(e=!0){const s=sessionStorage.getItem(this.#s)}async toggleSelectedIndexes(e){}async toggleSelectedIds(e){}async setSelectedAll(e){sessionStorage.setItem(this.#s,JSON.stringify({type:"all"}))}}export{d as DataManagerIDBProvider};
+import { BaseDataManager } from "./data-manager-base.js";
+const DB_NAME = "data-manager";
+class DataManagerIDBProvider extends BaseDataManager {
+  #storeName;
+  #sessionKey;
+  get storeName() {
+    return this.#storeName;
+  }
+  set records(newValue) {
+    this.setRecords(newValue).catch((errors) => console.error(errors));
+  }
+  dispose() {
+    crs.call("idb", "release_stores", {
+      "name": DB_NAME,
+      "stores": [this.#storeName]
+    }).catch((error) => console.error(error));
+    super.dispose();
+  }
+  async setRecords(records) {
+    await super.setRecords(records);
+    const result = await crs.call("idb", "set", {
+      "name": DB_NAME,
+      "store": this.#storeName,
+      "records": records,
+      "clear": true
+    });
+    this.#storeName = result.data;
+    this.#sessionKey = `${DB_NAME}_${this.#storeName}`;
+  }
+  async append(...record) {
+    await crs.call("idb", "set", {
+      "name": DB_NAME,
+      "store": this.#storeName,
+      "records": record,
+      "clear": false
+    });
+  }
+  async getAll() {
+    const idbResponse = await crs.call("idb", "get_all", {
+      "name": DB_NAME,
+      "store": this.#storeName
+    });
+    return super.markRecordsWithSelection(idbResponse.data);
+  }
+  async getPage(from, to) {
+    const idbResponse = await crs.call("idb", "get_batch", {
+      "name": DB_NAME,
+      "store": this.#storeName,
+      "startIndex": from,
+      "endIndex": to
+    });
+    return super.markRecordsWithSelection(idbResponse.data, from, to);
+  }
+  async getByIndex(indexes) {
+    const idbResponse = await crs.call("idb", "get", {
+      "name": DB_NAME,
+      "store": this.#storeName,
+      "indexes": Array.isArray(indexes) ? indexes : [indexes]
+    });
+    for (const record of idbResponse.data) {
+      record._selected = this.isSelected(record._index);
+    }
+    return idbResponse.data;
+  }
+  async getById(id) {
+    return await crs.call("idb", "get_by_id", {
+      "name": DB_NAME,
+      "store": this.#storeName,
+      "id": id
+    });
+  }
+  async getIds(indexes) {
+    const records = await crs.call("idb", "get", {
+      "name": DB_NAME,
+      "store": this.#storeName,
+      "indexes": indexes
+    });
+    const ids = [];
+    for (const record of records) {
+      ids.push(record[this.idField]);
+    }
+    return ids;
+  }
+  async removeIndexes(indexes) {
+    await crs.call("idb", "delete_by_index", {
+      "name": DB_NAME,
+      "store": this.#storeName,
+      "index": indexes
+    });
+  }
+  async removeIds(ids) {
+    await crs.call("idb", "delete_by_id", {
+      "name": DB_NAME,
+      "store": this.#storeName,
+      "ids": ids
+    });
+  }
+  async updateIndex(index, changes) {
+    await crs.call("idb", "change_by_index", {
+      "name": DB_NAME,
+      "store": this.#storeName,
+      index,
+      changes
+    });
+  }
+  async updateId(id, changes) {
+    await crs.call("idb", "change_by_id", {
+      "name": DB_NAME,
+      "store": this.#storeName,
+      id,
+      changes
+    });
+  }
+  async update(record) {
+    await crs.call("idb", "update_by_id", {
+      "name": DB_NAME,
+      "store": this.#storeName,
+      "models": record
+    });
+  }
+  async setSelectedIds(ids, selected) {
+    const indexes = await crs.call("idb", "get_by_id", {
+      "name": DB_NAME,
+      "store": this.#storeName,
+      "ids": ids
+    });
+    return await this.setSelectedIndexes(indexes, selected);
+  }
+  async toggleSelectedIds(ids) {
+    const indexes = await crs.call("idb", "get_by_id", {
+      "name": DB_NAME,
+      "store": this.#storeName,
+      "ids": ids
+    });
+    return await super.toggleSelectedIndexes(indexes);
+  }
+  async getSelected(isSelected = true) {
+    let indexes;
+    if (isSelected === true) {
+      indexes = await super.getSelectedIndexes();
+    } else {
+      indexes = [];
+      for (let i = 0; i < this.count; i++) {
+        if (this.isSelected(i) === false) {
+          indexes.push(i);
+        }
+      }
+    }
+    const idbResponse = await crs.call("idb", "get", {
+      "name": DB_NAME,
+      "store": this.#storeName,
+      "indexes": indexes
+    });
+    return super.markRecordsWithSelection(idbResponse.data);
+  }
+}
+export {
+  DataManagerIDBProvider
+};

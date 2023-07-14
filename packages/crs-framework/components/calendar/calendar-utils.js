@@ -1,1 +1,8 @@
-class o{static getYearsAround(a,r,e){return Array.from({length:e-r+1},(t,l)=>({year:a+r+l}))}}export{o as CalendarUtils};
+class CalendarUtils {
+  static getYearsAround(year, startOffset, endOffset) {
+    return Array.from({ length: endOffset - startOffset + 1 }, (_, i) => ({ year: year + startOffset + i }));
+  }
+}
+export {
+  CalendarUtils
+};

@@ -1,1 +1,6 @@
-class a extends HTMLElement{async set_schema(e,s){this.innerHTML=await crs.call("schema","parse",{id:e,schema:s})}}customElements.define("schema-viewer",a);
+class SchemaViewer extends HTMLElement {
+  async set_schema(id, schema) {
+    this.innerHTML = await crs.call("schema", "parse", { id, schema });
+  }
+}
+customElements.define("schema-viewer", SchemaViewer);

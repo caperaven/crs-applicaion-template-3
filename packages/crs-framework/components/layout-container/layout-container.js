@@ -1,1 +1,26 @@
-class e extends HTMLElement{async connectedCallback(){await this.#s()}async#s(){const s=this.dataset.columns,t=this.dataset.rows;s==null&&t==null||(await crs.call("cssgrid","init",{element:this}),await crs.call("cssgrid","set_columns",{element:this,columns:s}),await crs.call("cssgrid","set_rows",{element:this,rows:t}))}}customElements.define("layout-container",e);export{e as default};
+class LayoutContainer extends HTMLElement {
+  async connectedCallback() {
+    await this.#renderGrid();
+  }
+  async #renderGrid() {
+    const columns = this.dataset.columns;
+    const rows = this.dataset.rows;
+    if (columns == null && rows == null)
+      return;
+    await crs.call("cssgrid", "init", {
+      element: this
+    });
+    await crs.call("cssgrid", "set_columns", {
+      element: this,
+      columns
+    });
+    await crs.call("cssgrid", "set_rows", {
+      element: this,
+      rows
+    });
+  }
+}
+customElements.define("layout-container", LayoutContainer);
+export {
+  LayoutContainer as default
+};

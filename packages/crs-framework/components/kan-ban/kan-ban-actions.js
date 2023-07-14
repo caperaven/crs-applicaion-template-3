@@ -1,1 +1,30 @@
-class c{static async perform(e,t,a,n){await this[e.action]?.(e,t,a,n)}static async observe_changes(e,t,a,n){await(await crs.dom.get_element(e,t,a,n)).observe_changes()}static async unobserve_changes(e,t,a,n){await(await crs.dom.get_element(e,t,a,n)).unobserve_changes()}static async refresh(e,t,a,n){await(await crs.dom.get_element(e,t,a,n)).refresh()}}crs.intent.kan_ban=c;export{c as KanBanActions};
+class KanBanActions {
+  static async perform(step, context, process, item) {
+    await this[step.action]?.(step, context, process, item);
+  }
+  /**
+   * Watch for changes on the data manager
+   */
+  static async observe_changes(step, context, process, item) {
+    const element = await crs.dom.get_element(step, context, process, item);
+    await element.observe_changes();
+  }
+  /**
+   * Don't watch for changes on the observation manager
+   */
+  static async unobserve_changes(step, context, process, item) {
+    const element = await crs.dom.get_element(step, context, process, item);
+    await element.unobserve_changes();
+  }
+  /**
+   * Redraw the kanban from scratch with what data there is
+   */
+  static async refresh(step, context, process, item) {
+    const element = await crs.dom.get_element(step, context, process, item);
+    await element.refresh();
+  }
+}
+crs.intent.kan_ban = KanBanActions;
+export {
+  KanBanActions
+};

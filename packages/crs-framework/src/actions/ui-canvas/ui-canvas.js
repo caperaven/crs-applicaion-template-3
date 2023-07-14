@@ -1,1 +1,28 @@
-import"../columns-actions.js";class c{#s;constructor(s){this.#s=s}dispose(){this.#s.__uiCanvas=null,this.#s=null}}class o{static async perform(s,t,a,e){await this[s.action]?.(s,t,a,e)}static async enable(s,t,a,e){const n=await crs.dom.get_element(s,t,a,e);n.__uiCanvas=new c(n)}static async disable(s,t,a,e){(await crs.dom.get_element(s,t,a,e)).__uiCanvas.dispose()}}crs.intent.ui_canvas=o;export{o as UICanvasActions};
+import { ColumnsActions } from "../columns-actions.js";
+class UICanvas {
+  #element;
+  constructor(element) {
+    this.#element = element;
+  }
+  dispose() {
+    this.#element.__uiCanvas = null;
+    this.#element = null;
+  }
+}
+class UICanvasActions {
+  static async perform(step, context, process, item) {
+    await this[step.action]?.(step, context, process, item);
+  }
+  static async enable(step, context, process, item) {
+    const element = await crs.dom.get_element(step, context, process, item);
+    element.__uiCanvas = new UICanvas(element);
+  }
+  static async disable(step, context, process, item) {
+    const element = await crs.dom.get_element(step, context, process, item);
+    element.__uiCanvas.dispose();
+  }
+}
+crs.intent.ui_canvas = UICanvasActions;
+export {
+  UICanvasActions
+};

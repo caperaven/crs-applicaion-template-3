@@ -1,1 +1,5 @@
-function e(n){}export{e as addColumnGroupFeatures};
+function addColumnGroupFeatures(instance) {
+}
+export {
+  addColumnGroupFeatures
+};

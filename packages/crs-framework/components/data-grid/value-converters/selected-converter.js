@@ -1,1 +1,11 @@
-const t={get(e,r){return e=="true"||e==!0?"check":"check-box-blank"},set(e,r){return e=="check"}};export{t as selectedConverter};
+const selectedConverter = {
+  get(value, args) {
+    return value == "true" || value == true ? "check" : "check-box-blank";
+  },
+  set(value, args) {
+    return value == "check" ? true : false;
+  }
+};
+export {
+  selectedConverter
+};

@@ -1,3 +1,183 @@
-class c extends crs.classes.BindableElement{#t=[];get shadowDom(){return!0}get html(){return import.meta.url.replace(".js",".html")}async connectedCallback(){await super.connectedCallback()}async load(){const t=this.shadowRoot.querySelector("#tplFolder"),e=this.shadowRoot.querySelector("#tplFile");await crs.binding.inflation.manager.register("file-system-folder",t),await crs.binding.inflation.manager.register("file-system-file",e)}async disconnectedCallback(){await crs.binding.inflation.manager.unregister("file-system-folder"),await crs.binding.inflation.manager.unregister("file-system-file"),await super.disconnectedCallback()}#n(t,e){for(const a of t)a.path=e.length==0?a.name:`${e}/${a.name}`}async#s(t){if(this.dispatchEvent(new CustomEvent("change",{bubbles:!0,composed:!0,detail:{kind:"directory",name:t.textContent.split(`
-`).join("")}})),t.matches('[aria-expanded="true"]'))return await this.#i(t);t.setAttribute("aria-expanded","true");const e=Number(t.dataset.level),a=t.dataset.path,n=this.#t.findIndex(h=>h.path==a),s=this.#t[n],i=await crs.call("fs","open_folder",{handle:s});await this.#r(i,a);const d=await this.#a(i,e+1);(t.parentElement||t.getRootNode()).insertBefore(d,t.nextElementSibling),this.#t.splice(n+1,0,...i),t.dataset.count=i.length}async#i(t){t.setAttribute("aria-expanded","false");const e=Number(t.dataset.count);t.dataset.count=0;const a=t.parentElement||t.getRootNode();for(let s=0;s<e;s++)a.removeChild(t.nextElementSibling);const n=this.#t.findIndex(s=>s.path==t.dataset.path);this.#t.splice(n+1,e)}async#e(t){const e=t.dataset.path,a=this.#t.find(s=>s.path==e),n=await crs.call("fs","read_file",{handle:a});this.dispatchEvent(new CustomEvent("change",{bubbles:!0,composed:!0,detail:{kind:"file",name:t.textContent.split(`
-`).join(""),content:n,path:t.dataset.path}}))}async#r(t,e){for(const a of t)a.path=`${e}/${a.name}`}async#a(t,e=0){const a=[],n=[];for(const i of t)i.kind=="file"?n.push(i):a.push(i);l(a),l(n);const s=document.createDocumentFragment();return await o(a,s,"file-system-folder",e),await o(n,s,"file-system-file",e),s}async selectFolder(){this.#t=await crs.call("fs","open_folder",{}),this.#n(this.#t,"");const t=this.shadowRoot.querySelector("ul");t.innerHTML="";const e=await this.#a(this.#t);await t.appendChild(e)}async dblclick(t){const e=t.composedPath()[0];if(e.nodeName=="UL")return;if((e.parentElement||e.getRootNode()).querySelector("[aria-selected]")?.removeAttribute("aria-selected"),e.setAttribute("aria-selected","true"),e.dataset.type==="directory")return await this.#s(e);await this.#e(e)}async click(t){const e=t.composedPath()[0];(e.parentElement||e.getRootNode()).querySelector("[aria-selected]")?.removeAttribute("aria-selected"),e.setAttribute("aria-selected","true"),e.dataset.type==="file"&&await this.#e(e)}async save(t,e){const a=this.#t?.find(n=>n.path==t);a!=null&&(await crs.call("fs","save_file",{handle:a,content:e}),await crs.call("toast_notification","show",{message:"successfully saved",severity:"info"}))}async saveNew(t,e){const a=await crs.call("fs","write_new_file",{file_types:e,default_name:"undefined",content:t});return a.path=a.name,this.#t.push(a),a.name}}function l(r){r.sort((t,e)=>t.name<e.name?-1:t.name>e.name?1:0)}async function o(r,t,e,a){if(r.length==0)return;const n=await crs.binding.inflation.manager.get(e,r);for(;n?.firstElementChild;){const s=n.firstElementChild.cloneNode(!0);s.dataset.level=a,s.style.marginLeft=`${a*16}px`,t.appendChild(s),n.removeChild(n.firstElementChild)}}customElements.define("file-system",c);export{c as default};
+class FileSystem extends crs.classes.BindableElement {
+  #data = [];
+  get shadowDom() {
+    return true;
+  }
+  get html() {
+    return import.meta.url.replace(".js", ".html");
+  }
+  async connectedCallback() {
+    await super.connectedCallback();
+  }
+  async load() {
+    const tplFolder = this.shadowRoot.querySelector("#tplFolder");
+    const tplFile = this.shadowRoot.querySelector("#tplFile");
+    await crs.binding.inflation.manager.register("file-system-folder", tplFolder);
+    await crs.binding.inflation.manager.register("file-system-file", tplFile);
+  }
+  async disconnectedCallback() {
+    await crs.binding.inflation.manager.unregister("file-system-folder");
+    await crs.binding.inflation.manager.unregister("file-system-file");
+    await super.disconnectedCallback();
+  }
+  #setPath(array, root) {
+    for (const item of array) {
+      item.path = root.length == 0 ? item.name : `${root}/${item.name}`;
+    }
+  }
+  async #expandFolder(element) {
+    this.dispatchEvent(new CustomEvent("change", {
+      bubbles: true,
+      composed: true,
+      detail: {
+        kind: "directory",
+        name: element.textContent.split("\n").join("")
+      }
+    }));
+    if (element.matches('[aria-expanded="true"]')) {
+      return await this.#collapseFolder(element);
+    }
+    element.setAttribute("aria-expanded", "true");
+    const level = Number(element.dataset.level);
+    const path = element.dataset.path;
+    const index = this.#data.findIndex((item) => item.path == path);
+    const handle = this.#data[index];
+    const data = await crs.call("fs", "open_folder", { handle });
+    await this.#prefixPaths(data, path);
+    const fragment = await this.#generateFragment(data, level + 1);
+    const parentElement = element.parentElement || element.getRootNode();
+    parentElement.insertBefore(fragment, element.nextElementSibling);
+    this.#data.splice(index + 1, 0, ...data);
+    element.dataset.count = data.length;
+  }
+  async #collapseFolder(element) {
+    element.setAttribute("aria-expanded", "false");
+    const count = Number(element.dataset.count);
+    element.dataset.count = 0;
+    const parentElement = element.parentElement || element.getRootNode();
+    for (let i = 0; i < count; i++) {
+      parentElement.removeChild(element.nextElementSibling);
+    }
+    const index = this.#data.findIndex((item) => item.path == element.dataset.path);
+    this.#data.splice(index + 1, count);
+  }
+  async #loadFile(element) {
+    const path = element.dataset.path;
+    const handle = this.#data.find((item) => item.path == path);
+    const result = await crs.call("fs", "read_file", { handle });
+    this.dispatchEvent(new CustomEvent("change", {
+      bubbles: true,
+      composed: true,
+      detail: {
+        kind: "file",
+        name: element.textContent.split("\n").join(""),
+        content: result,
+        path: element.dataset.path
+      }
+    }));
+  }
+  async #prefixPaths(data, path) {
+    for (const item of data) {
+      item.path = `${path}/${item.name}`;
+    }
+  }
+  async #generateFragment(data, level = 0) {
+    const folders = [];
+    const files = [];
+    for (const item of data) {
+      if (item.kind == "file") {
+        files.push(item);
+      } else {
+        folders.push(item);
+      }
+    }
+    sortArray(folders);
+    sortArray(files);
+    const fragment = document.createDocumentFragment();
+    await buildUI(folders, fragment, "file-system-folder", level);
+    await buildUI(files, fragment, "file-system-file", level);
+    return fragment;
+  }
+  /**
+   * called externally to start the process when the parent is ready
+   * @returns {Promise<void>}
+   */
+  async selectFolder() {
+    this.#data = await crs.call("fs", "open_folder", {});
+    this.#setPath(this.#data, "");
+    const ul = this.shadowRoot.querySelector("ul");
+    ul.innerHTML = "";
+    const children = await this.#generateFragment(this.#data);
+    await ul.appendChild(children);
+  }
+  /**
+   * called by binding
+   */
+  async dblclick(event) {
+    const element = event.composedPath()[0];
+    if (element.nodeName == "UL")
+      return;
+    const parentElement = element.parentElement || element.getRootNode();
+    const selected = parentElement.querySelector("[aria-selected]");
+    selected?.removeAttribute("aria-selected");
+    element.setAttribute("aria-selected", "true");
+    if (element.dataset.type === "directory") {
+      return await this.#expandFolder(element);
+    }
+    await this.#loadFile(element);
+  }
+  async click(event) {
+    const element = event.composedPath()[0];
+    const parentElement = element.parentElement || element.getRootNode();
+    const selected = parentElement.querySelector("[aria-selected]");
+    selected?.removeAttribute("aria-selected");
+    element.setAttribute("aria-selected", "true");
+    if (element.dataset.type === "file") {
+      await this.#loadFile(element);
+    }
+  }
+  async save(key, content) {
+    const handle = this.#data?.find((item) => item.path == key);
+    if (handle == null)
+      return;
+    await crs.call("fs", "save_file", { handle, content });
+    await crs.call("toast_notification", "show", { message: "successfully saved", severity: "info" });
+  }
+  async saveNew(content, fileTypes) {
+    const handle = await crs.call("fs", "write_new_file", {
+      file_types: fileTypes,
+      default_name: "undefined",
+      content
+    });
+    handle.path = handle.name;
+    this.#data.push(handle);
+    return handle.name;
+  }
+}
+function sortArray(array) {
+  array.sort((a, b) => {
+    if (a.name < b.name) {
+      return -1;
+    }
+    if (a.name > b.name) {
+      return 1;
+    }
+    return 0;
+  });
+}
+async function buildUI(array, fragment, key, level) {
+  if (array.length == 0)
+    return;
+  const items = await crs.binding.inflation.manager.get(key, array);
+  while (items?.firstElementChild) {
+    const element = items.firstElementChild.cloneNode(true);
+    element.dataset.level = level;
+    element.style.marginLeft = `${level * 16}px`;
+    fragment.appendChild(element);
+    items.removeChild(items.firstElementChild);
+  }
+}
+customElements.define("file-system", FileSystem);
+export {
+  FileSystem as default
+};
